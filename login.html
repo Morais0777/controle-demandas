@@ -137,8 +137,10 @@
     const supabase = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
 
     // Redireciona se já logado
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session) window.location.replace('pages/dashboard.html');
+    (async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) window.location.replace('pages/dashboard.html');
+    })();
 
     // ── Helpers UI ────────────────────────────────────────
     function showMsg(id, type, text) {
@@ -264,3 +266,5 @@
   </script>
 </body>
 </html>
+
+
