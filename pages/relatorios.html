@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Relatórios — Controle de Demandas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+  <div class="app-layout" id="appLayout">
+    <main class="main-content">
+      <div class="page-content">
+
+        <div class="page-header">
+          <div class="page-header-left">
+            <h1 class="page-title">Relatórios</h1>
+            <p class="page-subtitle">Gere relatórios por período e imprima ou salve como PDF</p>
+          </div>
+        </div>
+
+        <!-- Painel de configuração do relatório -->
+        <div class="card" style="margin-bottom:24px">
+          <div class="card-header">
+            <span class="card-title">Configurar relatório</span>
+          </div>
+
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:20px">
+            <div class="form-group">
+              <label for="relDataInicio">Data inicial *</label>
+              <input type="date" id="relDataInicio" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="relDataFim">Data final *</label>
+              <input type="date" id="relDataFim" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="relStatus">Filtrar por status</label>
+              <select id="relStatus" class="form-control">
+                <option value="">Todos os status</option>
+                <option value="pendente">Pendente</option>
+                <option value="em_andamento">Em andamento</option>
+                <option value="aberta">Aberta</option>
+                <option value="concluida">Concluída</option>
+                <option value="concluido">Concluído</option>
+                <option value="cancelada">Cancelada</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="relResponsavel">Filtrar por responsável</label>
+              <input type="text" id="relResponsavel" class="form-control" placeholder="Nome do responsável">
+            </div>
+          </div>
+
+          <!-- Checkboxes de conteúdo -->
+          <div style="margin-bottom:20px">
+            <label style="display:block;margin-bottom:10px">Incluir no relatório</label>
+            <div style="display:flex;flex-wrap:wrap;gap:16px">
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:0.875rem;font-weight:400;color:var(--color-text)">
+                <input type="checkbox" id="inclDemandas" checked style="accent-color:var(--color-primary);width:16px;height:16px"> Demandas
+              </label>
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:0.875rem;font-weight:400;color:var(--color-text)">
+                <input type="checkbox" id="inclSolicitacoes" checked style="accent-color:var(--color-primary);width:16px;height:16px"> Solicitações
+              </label>
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:0.875rem;font-weight:400;color:var(--color-text)">
+                <input type="checkbox" id="inclLembretes" checked style="accent-color:var(--color-primary);width:16px;height:16px"> Lembretes
+              </label>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn btn-primary" id="btnGerarRelatorio">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              Gerar relatório
+            </button>
+            <button class="btn btn-secondary" id="btnImprimir" style="display:none">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+              Imprimir / Salvar PDF
+            </button>
+          </div>
+        </div>
+
+        <!-- Área do relatório gerado -->
+        <div id="relatorioArea" style="display:none">
+
+          <!-- Cabeçalho de impressão (visível no relatório e na impressão) -->
+          <div class="print-header" id="printHeader" style="display:block;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid var(--color-border)">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+              <div>
+                <h2 style="font-size:1.3rem;margin:0" id="printTitle">Relatório</h2>
+                <p style="color:var(--color-text-muted);font-size:0.875rem;margin:4px 0 0" id="printSubtitle"></p>
+              </div>
+              <div style="text-align:right;font-size:0.8rem;color:var(--color-text-muted)">
+                <div id="printData"></div>
+                <div id="printGerado"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sumário -->
+          <div class="card" style="margin-bottom:20px" id="resumoCard">
+            <div class="card-header"><span class="card-title">Resumo</span></div>
+            <div id="resumoContent" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:16px"></div>
+          </div>
+
+          <!-- Seção Demandas -->
+          <div id="secaoDemandas" style="display:none;margin-bottom:24px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+              <h3 style="font-size:1rem;margin:0">Demandas</h3>
+              <span class="badge badge-media" id="countDemandas">0</span>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Título</th>
+                    <th>Responsável</th>
+                    <th>Prioridade</th>
+                    <th>Status</th>
+                    <th>Prazo</th>
+                    <th>Situação</th>
+                  </tr>
+                </thead>
+                <tbody id="tbodyRelDemandas"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Seção Solicitações -->
+          <div id="secaoSolicitacoes" style="display:none;margin-bottom:24px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+              <h3 style="font-size:1rem;margin:0">Solicitações</h3>
+              <span class="badge badge-media" id="countSolicitacoes">0</span>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Título</th>
+                    <th>Solicitante</th>
+                    <th>Responsável</th>
+                    <th>Prioridade</th>
+                    <th>Status</th>
+                    <th>Prazo</th>
+                  </tr>
+                </thead>
+                <tbody id="tbodyRelSolicitacoes"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Seção Lembretes -->
+          <div id="secaoLembretes" style="display:none;margin-bottom:24px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+              <h3 style="font-size:1rem;margin:0">Lembretes</h3>
+              <span class="badge badge-media" id="countLembretes">0</span>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Título</th>
+                    <th>Data</th>
+                    <th>Horário</th>
+                    <th>Prioridade</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="tbodyRelLembretes"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Empty state -->
+          <div id="relEmptyState" style="display:none">
+            <div class="empty-state">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              <p class="empty-state-title">Nenhum dado encontrado</p>
+              <p class="empty-state-text">Não há registros no período e filtros selecionados.</p>
+            </div>
+          </div>
+
+          <!-- Rodapé de impressão -->
+          <div class="print-footer" id="printFooter">
+            Relatório gerado pelo sistema Controle de Demandas
+          </div>
+
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="../js/config.js"></script>
+  <script src="../js/app.js"></script>
+
+  <script src="../js/relatorios.js"></script>
+</body>
+</html>

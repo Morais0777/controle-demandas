@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Controle de Demandas — Login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/login.css">
+</head>
+<body class="login-page">
+
+  <!-- Botão de tema -->
+  <button class="login-theme-btn" id="btnTheme" title="Alternar tema" aria-label="Alternar tema">
+    <svg id="iconTheme" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+    </svg>
+  </button>
+
+  <div class="login-card">
+    <!-- Logo -->
+    <div class="login-logo">
+      <div class="login-logo-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+        </svg>
+      </div>
+      <div class="login-logo-text">
+        <span class="login-logo-title">Demandas</span>
+        <span class="login-logo-sub">Controle & Gestão</span>
+      </div>
+    </div>
+
+    <!-- Tabs Login / Cadastro -->
+    <div class="tab-nav">
+      <button class="tab-btn active" id="tabLogin" onclick="switchTab('login')">Entrar</button>
+      <button class="tab-btn" id="tabCadastro" onclick="switchTab('cadastro')">Criar conta</button>
+    </div>
+
+    <!-- ── Painel: Login ────────────────────────────────── -->
+    <div id="panelLogin">
+      <h1 class="login-heading">Bem-vindo de volta</h1>
+      <p class="login-sub">Entre com suas credenciais para acessar o sistema.</p>
+
+      <div id="loginMsg"></div>
+
+      <form class="login-form" id="formLogin" novalidate>
+        <div class="form-group">
+          <label for="loginEmail">E-mail</label>
+          <input type="email" id="loginEmail" class="form-control" placeholder="seu@email.com" required autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label for="loginSenha">Senha</label>
+          <input type="password" id="loginSenha" class="form-control" placeholder="••••••••" required autocomplete="current-password">
+          <span class="forgot-link" onclick="showForgot()">Esqueceu a senha?</span>
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg login-btn" id="btnLogin">
+          Entrar
+        </button>
+      </form>
+    </div>
+
+    <!-- ── Painel: Cadastro ─────────────────────────────── -->
+    <div id="panelCadastro" style="display:none">
+      <h1 class="login-heading">Criar conta</h1>
+      <p class="login-sub">Preencha os dados para começar a usar o sistema.</p>
+
+      <div id="cadastroMsg"></div>
+
+      <form class="login-form" id="formCadastro" novalidate>
+        <div class="form-group">
+          <label for="cadastroEmail">E-mail</label>
+          <input type="email" id="cadastroEmail" class="form-control" placeholder="seu@email.com" required autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label for="cadastroSenha">Senha</label>
+          <input type="password" id="cadastroSenha" class="form-control" placeholder="Mínimo 6 caracteres" required autocomplete="new-password">
+        </div>
+        <div class="form-group">
+          <label for="cadastroConfirma">Confirmar senha</label>
+          <input type="password" id="cadastroConfirma" class="form-control" placeholder="Repita a senha" required autocomplete="new-password">
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg login-btn" id="btnCadastro">
+          Criar conta
+        </button>
+      </form>
+    </div>
+
+    <!-- ── Painel: Recuperar senha ──────────────────────── -->
+    <div id="panelForgot" style="display:none">
+      <h1 class="login-heading">Recuperar senha</h1>
+      <p class="login-sub">Enviaremos um link de redefinição para o seu e-mail.</p>
+
+      <div id="forgotMsg"></div>
+
+      <form class="login-form" id="formForgot" novalidate>
+        <div class="form-group">
+          <label for="forgotEmail">E-mail</label>
+          <input type="email" id="forgotEmail" class="form-control" placeholder="seu@email.com" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg login-btn" id="btnForgot">
+          Enviar link
+        </button>
+      </form>
+
+      <div class="login-switch" style="margin-top:16px">
+        <a onclick="showLogin()">← Voltar ao login</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="js/config.js"></script>
+  <script>
+    // Supabase carregado via UMD no <head>
+
+    // ── Tema ──────────────────────────────────────────────
+    const html = document.documentElement;
+    const savedTheme = localStorage.getItem('cd-theme') || 'light';
+    html.setAttribute('data-theme', savedTheme);
+
+    document.getElementById('btnTheme').addEventListener('click', () => {
+      const current = html.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('cd-theme', next);
+    });
+
+    // ── Supabase ──────────────────────────────────────────
+    const supabase = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
+
+    // Redireciona se já logado
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) window.location.replace('pages/dashboard.html');
+
+    // ── Helpers UI ────────────────────────────────────────
+    function showMsg(id, type, text) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.className = type === 'error' ? 'login-error' : 'login-success';
+      el.textContent = text;
+      el.style.display = 'flex';
+      el.style.marginBottom = '16px';
+    }
+
+    function clearMsg(id) {
+      const el = document.getElementById(id);
+      if (el) { el.textContent = ''; el.style.display = 'none'; }
+    }
+
+    function setLoading(btnId, loading, original) {
+      const btn = document.getElementById(btnId);
+      if (!btn) return;
+      btn.disabled = loading;
+      btn.innerHTML = loading
+        ? '<span class="spinner"></span> Aguarde...'
+        : original;
+    }
+
+    // ── Tabs ──────────────────────────────────────────────
+    window.switchTab = (tab) => {
+      const isLogin = tab === 'login';
+      document.getElementById('panelLogin').style.display   = isLogin ? 'block' : 'none';
+      document.getElementById('panelCadastro').style.display = isLogin ? 'none' : 'block';
+      document.getElementById('panelForgot').style.display  = 'none';
+      document.getElementById('tabLogin').classList.toggle('active', isLogin);
+      document.getElementById('tabCadastro').classList.toggle('active', !isLogin);
+      clearMsg('loginMsg'); clearMsg('cadastroMsg');
+    };
+
+    window.showForgot = () => {
+      document.getElementById('panelLogin').style.display   = 'none';
+      document.getElementById('panelCadastro').style.display = 'none';
+      document.getElementById('panelForgot').style.display  = 'block';
+    };
+
+    window.showLogin = () => switchTab('login');
+
+    // ── Login ─────────────────────────────────────────────
+    document.getElementById('formLogin').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearMsg('loginMsg');
+      const email    = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginSenha').value;
+
+      if (!email || !password) {
+        showMsg('loginMsg', 'error', 'Preencha e-mail e senha.');
+        return;
+      }
+
+      setLoading('btnLogin', true, 'Entrar');
+      try {
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        window.location.replace('pages/dashboard.html');
+      } catch (err) {
+        showMsg('loginMsg', 'error', err.message === 'Invalid login credentials'
+          ? 'E-mail ou senha incorretos.'
+          : err.message);
+        setLoading('btnLogin', false, 'Entrar');
+      }
+    });
+
+    // ── Cadastro ──────────────────────────────────────────
+    document.getElementById('formCadastro').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearMsg('cadastroMsg');
+      const email    = document.getElementById('cadastroEmail').value.trim();
+      const senha    = document.getElementById('cadastroSenha').value;
+      const confirma = document.getElementById('cadastroConfirma').value;
+
+      if (!email || !senha) {
+        showMsg('cadastroMsg', 'error', 'Preencha todos os campos.');
+        return;
+      }
+      if (senha.length < 6) {
+        showMsg('cadastroMsg', 'error', 'A senha deve ter no mínimo 6 caracteres.');
+        return;
+      }
+      if (senha !== confirma) {
+        showMsg('cadastroMsg', 'error', 'As senhas não coincidem.');
+        return;
+      }
+
+      setLoading('btnCadastro', true, 'Criar conta');
+      try {
+        const { error } = await supabase.auth.signUp({ email, password: senha });
+        if (error) throw error;
+        showMsg('cadastroMsg', 'success', 'Conta criada! Verifique seu e-mail para confirmar.');
+        setLoading('btnCadastro', false, 'Criar conta');
+      } catch (err) {
+        showMsg('cadastroMsg', 'error', err.message);
+        setLoading('btnCadastro', false, 'Criar conta');
+      }
+    });
+
+    // ── Recuperar senha ───────────────────────────────────
+    document.getElementById('formForgot').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearMsg('forgotMsg');
+      const email = document.getElementById('forgotEmail').value.trim();
+      if (!email) { showMsg('forgotMsg', 'error', 'Informe seu e-mail.'); return; }
+
+      setLoading('btnForgot', true, 'Enviar link');
+      try {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}/login.html`
+        });
+        if (error) throw error;
+        showMsg('forgotMsg', 'success', 'Link enviado! Verifique sua caixa de entrada.');
+        setLoading('btnForgot', false, 'Enviar link');
+      } catch (err) {
+        showMsg('forgotMsg', 'error', err.message);
+        setLoading('btnForgot', false, 'Enviar link');
+      }
+    });
+  </script>
+</body>
+</html>

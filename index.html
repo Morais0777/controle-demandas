@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Controle de Demandas</title>
+  <script>
+    // Redireciona para login ou dashboard conforme sessão
+    const stored = localStorage.getItem('sb-auth-token');
+    if (stored) {
+      window.location.replace('pages/dashboard.html');
+    } else {
+      window.location.replace('login.html');
+    }
+  </script>
+</head>
+<body>Redirecionando...</body>
+</html>

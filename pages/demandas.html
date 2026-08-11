@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demandas — Controle de Demandas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+  <div class="app-layout" id="appLayout">
+    <main class="main-content">
+      <div class="page-content">
+
+        <!-- Cabeçalho da página -->
+        <div class="page-header">
+          <div class="page-header-left">
+            <h1 class="page-title">Demandas</h1>
+            <p class="page-subtitle">Gerencie e acompanhe todas as demandas</p>
+          </div>
+          <button class="btn btn-primary" id="btnNovaDemanda">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Nova demanda
+          </button>
+        </div>
+
+        <!-- Filtros -->
+        <div class="filters-bar">
+          <div class="search-input-wrap">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" class="search-input" id="searchDemanda" placeholder="Pesquisar por título, responsável...">
+          </div>
+          <select class="filter-select" id="filterStatus">
+            <option value="">Todos os status</option>
+            <option value="pendente">Pendente</option>
+            <option value="em_andamento">Em andamento</option>
+            <option value="concluida">Concluída</option>
+            <option value="cancelada">Cancelada</option>
+          </select>
+          <select class="filter-select" id="filterPrioridade">
+            <option value="">Todas as prioridades</option>
+            <option value="baixa">Baixa</option>
+            <option value="media">Média</option>
+            <option value="alta">Alta</option>
+            <option value="urgente">Urgente</option>
+          </select>
+          <input type="date" class="filter-select" id="filterDataInicio" title="Data início">
+          <input type="date" class="filter-select" id="filterDataFim" title="Data fim">
+          <button class="btn btn-secondary btn-sm" id="btnLimparFiltros">Limpar</button>
+        </div>
+
+        <!-- Tabela -->
+        <div class="table-wrap">
+          <table class="table-responsive" id="tableDemandas">
+            <thead>
+              <tr>
+                <th>Título</th>
+                <th class="hide-mobile">Responsável</th>
+                <th>Prioridade</th>
+                <th>Status</th>
+                <th class="hide-mobile">Prazo</th>
+                <th class="hide-mobile">Situação</th>
+                <th style="width:100px">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="tbodyDemandas">
+              <tr><td colspan="7"><div class="loading-state"><span class="spinner spinner-dark"></span> Carregando...</div></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ── Modal: Criar / Editar Demanda ──────────────────── -->
+  <div class="modal-overlay" id="modalDemanda">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalDemandaTitle">Nova demanda</h3>
+        <button class="modal-close" id="btnCloseModalDemanda">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form class="form-grid" id="formDemanda" novalidate>
+          <input type="hidden" id="demandaId">
+          <div class="form-group full-width">
+            <label for="demandaTitulo">Título *</label>
+            <input type="text" id="demandaTitulo" class="form-control" placeholder="Ex: Implementar relatório mensal" required>
+          </div>
+          <div class="form-group full-width">
+            <label for="demandaDescricao">Descrição</label>
+            <textarea id="demandaDescricao" class="form-control" placeholder="Descreva a demanda..."></textarea>
+          </div>
+          <div class="form-group">
+            <label for="demandaResponsavel">Responsável *</label>
+            <input type="text" id="demandaResponsavel" class="form-control" placeholder="Nome do responsável" required>
+          </div>
+          <div class="form-group">
+            <label for="demandaPrazo">Prazo</label>
+            <input type="date" id="demandaPrazo" class="form-control">
+          </div>
+          <div class="form-group">
+            <label for="demandaPrioridade">Prioridade *</label>
+            <select id="demandaPrioridade" class="form-control" required>
+              <option value="">Selecione...</option>
+              <option value="baixa">Baixa</option>
+              <option value="media">Média</option>
+              <option value="alta">Alta</option>
+              <option value="urgente">Urgente</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="demandaStatus">Status *</label>
+            <select id="demandaStatus" class="form-control" required>
+              <option value="pendente">Pendente</option>
+              <option value="em_andamento">Em andamento</option>
+              <option value="concluida">Concluída</option>
+              <option value="cancelada">Cancelada</option>
+            </select>
+          </div>
+          <div class="form-group full-width">
+            <label for="demandaObservacoes">Observações</label>
+            <textarea id="demandaObservacoes" class="form-control" placeholder="Observações adicionais..."></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="btnCancelDemanda">Cancelar</button>
+        <button class="btn btn-primary" id="btnSaveDemanda">Salvar demanda</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Modal: Visualizar Detalhes ─────────────────────── -->
+  <div class="modal-overlay" id="modalDetalhe">
+    <div class="modal modal-lg">
+      <div class="modal-header">
+        <h3 class="modal-title">Detalhes da demanda</h3>
+        <button class="modal-close" id="btnCloseDetalhe">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body" id="detalheContent"></div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="btnCloseDetalheFooter">Fechar</button>
+        <button class="btn btn-primary" id="btnEditarDetalhe">Editar</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="../js/config.js"></script>
+  <script src="../js/app.js"></script>
+
+  <script src="../js/demandas.js"></script>
+</body>
+</html>
