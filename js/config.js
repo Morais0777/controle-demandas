@@ -5,8 +5,8 @@
 // ============================================================
 
 const SUPABASE_CONFIG = {
-  url: 'https://SEU_PROJECT_ID.supabase.co',  // ← Cole sua Project URL
-  anonKey: 'SUA_ANON_KEY_AQUI'                // ← Cole sua anon/public key
+  url: 'https://eanmiqacaphchqhrbrvt.supabase.co',  // ← Cole sua Project URL
+  anonKey: 'sb_publishable_KK6ywEpqwkMHa6MuCFWomA_GUsbHEzB'                // ← Cole sua anon/public key
 };
 
 // NÃO compartilhe este arquivo com credenciais preenchidas
