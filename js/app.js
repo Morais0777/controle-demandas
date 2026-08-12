@@ -4,11 +4,12 @@
 // ============================================================
 
 // ── Cliente Supabase (criado a partir do config.js) ──────────
-const supabase = window.supabase.createClient(
+window._sb = window.supabase.createClient(
   SUPABASE_CONFIG.url,
   SUPABASE_CONFIG.anonKey,
   { auth: { autoRefreshToken: true, persistSession: true } }
 );
+const supabase = window._sb;
 
 // ── Proteção de rota ──────────────────────────────────────────
 async function initPage(pageTitle) {
@@ -249,3 +250,5 @@ function renderLayout(activeSection) {
     document.body.insertAdjacentHTML('beforeend', '<div class="toast-container" id="toastContainer"></div>');
   }
 }
+
+
