@@ -134,11 +134,11 @@
     });
 
     // ── Supabase ──────────────────────────────────────────
-    const supabase = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
+    const _sb = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
 
     // Redireciona se já logado
     (async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const { data: { session } } = await _sb.auth.getSession();
       if (session) window.location.replace('pages/dashboard.html');
     })();
 
@@ -199,7 +199,7 @@
 
       setLoading('btnLogin', true, 'Entrar');
       try {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        const { error } = await _sb.auth.signInWithPassword({ email, password });
         if (error) throw error;
         window.location.replace('pages/dashboard.html');
       } catch (err) {
@@ -233,7 +233,7 @@
 
       setLoading('btnCadastro', true, 'Criar conta');
       try {
-        const { error } = await supabase.auth.signUp({ email, password: senha });
+        const { error } = await _sb.auth.signUp({ email, password: senha });
         if (error) throw error;
         showMsg('cadastroMsg', 'success', 'Conta criada! Verifique seu e-mail para confirmar.');
         setLoading('btnCadastro', false, 'Criar conta');
@@ -252,7 +252,7 @@
 
       setLoading('btnForgot', true, 'Enviar link');
       try {
-        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        const { error } = await _sb.auth.resetPasswordForEmail(email, {
           redirectTo: `${window.location.origin}/login.html`
         });
         if (error) throw error;
@@ -266,5 +266,7 @@
   </script>
 </body>
 </html>
+
+
 
 
