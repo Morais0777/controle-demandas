@@ -20,7 +20,7 @@
         <div id="reminderAlert" style="display:none"></div>
 
         <!-- KPIs -->
-        <div class="kpi-grid" id="kpiGrid">
+        <div class="kpi-grid" id="kpiGrid" style="grid-template-columns: repeat(7, 1fr);">
           <div class="kpi-card"><div class="kpi-icon primary"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg></div><div class="kpi-value" id="kpiTotalDemandas">—</div><div class="kpi-label">Total de demandas</div></div>
           <div class="kpi-card"><div class="kpi-icon warning"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="kpi-value" id="kpiDemPendentes">—</div><div class="kpi-label">Demandas pendentes</div></div>
           <div class="kpi-card"><div class="kpi-icon success"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg></div><div class="kpi-value" id="kpiDemConcluidas">—</div><div class="kpi-label">Demandas concluídas</div></div>
@@ -81,4 +81,5 @@
   <script src="../js/dashboard.js"></script>
 </body>
 </html>
+
 
