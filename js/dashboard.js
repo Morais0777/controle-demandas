@@ -9,9 +9,9 @@
   async function loadDashboard() {
     try {
       const [demRes, solRes, lemRes] = await Promise.all([
-        supabase.from('demandas').select('*').order('created_at', { ascending: false }),
-        supabase.from('solicitacoes').select('*').order('created_at', { ascending: false }),
-        supabase.from('lembretes').select('*').order('data_lembrete', { ascending: true })
+        window._sb.from('demandas').select('*').order('created_at', { ascending: false }),
+        window._sb.from('solicitacoes').select('*').order('created_at', { ascending: false }),
+        window._sb.from('lembretes').select('*').order('data_lembrete', { ascending: true })
       ]);
       if (demRes.error) throw demRes.error;
       if (solRes.error) throw solRes.error;
@@ -111,3 +111,4 @@
 
   await loadDashboard();
 })();
+

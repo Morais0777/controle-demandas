@@ -3,19 +3,18 @@
 // Funciona sem módulos ES6 — compatível com GitHub Pages
 // ============================================================
 
-// ── Cliente Supabase (criado a partir do config.js) ──────────
+// ── Cliente Supabase ──────────────────────────────────────────
 window._sb = window.supabase.createClient(
   SUPABASE_CONFIG.url,
   SUPABASE_CONFIG.anonKey,
   { auth: { autoRefreshToken: true, persistSession: true } }
 );
-const supabase = window._sb;
 
 // ── Proteção de rota ──────────────────────────────────────────
 async function initPage(pageTitle) {
   applyTheme();
 
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { session } } = await window._sb.auth.getSession();
   if (!session) {
     window.location.replace('../login.html');
     return null;
@@ -28,7 +27,7 @@ async function initPage(pageTitle) {
   document.getElementById('btnMenuMobile')?.addEventListener('click', toggleMobileMenu);
   document.getElementById('sidebarOverlay')?.addEventListener('click', closeMobileMenu);
   document.getElementById('btnLogout')?.addEventListener('click', async () => {
-    await supabase.auth.signOut();
+    await window._sb.auth.signOut();
     window.location.replace('../login.html');
   });
 
@@ -250,5 +249,6 @@ function renderLayout(activeSection) {
     document.body.insertAdjacentHTML('beforeend', '<div class="toast-container" id="toastContainer"></div>');
   }
 }
+
 
 
