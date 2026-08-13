@@ -3,8 +3,8 @@
 // Funciona sem módulos ES6 — compatível com GitHub Pages
 // ============================================================
 
-// ── Cliente Supabase ──────────────────────────────────────────
-window._sb = window.supabase.createClient(
+// ── Cliente Supabase (criado a partir do config.js) ──────────
+const supabase = window.supabase.createClient(
   SUPABASE_CONFIG.url,
   SUPABASE_CONFIG.anonKey,
   { auth: { autoRefreshToken: true, persistSession: true } }
@@ -14,7 +14,7 @@ window._sb = window.supabase.createClient(
 async function initPage(pageTitle) {
   applyTheme();
 
-  const { data: { session } } = await window._sb.auth.getSession();
+  const { data: { session } } = await supabase.auth.getSession();
   if (!session) {
     window.location.replace('../login.html');
     return null;
@@ -23,11 +23,9 @@ async function initPage(pageTitle) {
   populateUser(session.user);
   highlightNav();
 
-  document.getElementById('btnTheme')?.addEventListener('click', toggleTheme);
-  document.getElementById('btnMenuMobile')?.addEventListener('click', toggleMobileMenu);
   document.getElementById('sidebarOverlay')?.addEventListener('click', closeMobileMenu);
   document.getElementById('btnLogout')?.addEventListener('click', async () => {
-    await window._sb.auth.signOut();
+    await supabase.auth.signOut();
     window.location.replace('../login.html');
   });
 
@@ -225,30 +223,12 @@ function renderLayout(activeSection) {
       </div>
     </aside>`;
 
-  const topbarHTML = `
-    <header class="topbar">
-      <button class="topbar-menu-btn" id="btnMenuMobile">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-      </button>
-      <span class="topbar-title" id="topbarTitle">Dashboard</span>
-      <div class="topbar-actions">
-        <button class="btn-theme" id="btnTheme" title="Alternar tema">
-          <svg id="iconTheme" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
-          </svg>
-        </button>
-      </div>
-    </header>`;
-
   const layout = document.getElementById('appLayout');
   if (layout) {
     layout.insertAdjacentHTML('beforebegin', sidebarHTML);
-    layout.insertAdjacentHTML('afterbegin', topbarHTML);
   }
   if (!document.getElementById('toastContainer')) {
     document.body.insertAdjacentHTML('beforeend', '<div class="toast-container" id="toastContainer"></div>');
   }
 }
-
-
 
