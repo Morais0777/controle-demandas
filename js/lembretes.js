@@ -10,7 +10,7 @@
 
   async function loadLembretes() {
     try {
-      const {data,error} = await supabase.from('lembretes').select('*').order('data_lembrete',{ascending:true});
+      const {data,error} = await window._sb.from('lembretes').select('*').order('data_lembrete',{ascending:true});
       if(error) throw error;
       allLembretes = data||[];
       renderKpis(); renderAlertas(); renderTable(applyFilters());
@@ -93,14 +93,14 @@
     const btn=document.getElementById('btnSaveLem');btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Salvando...';
     const payload={titulo,descricao:descricao||null,data_lembrete:data,horario:horario||null,prioridade,status:status||'pendente',observacoes:observacoes||null,user_id:user.id};
     try{
-      if(editingId){delete payload.user_id;const{error}=await supabase.from('lembretes').update(payload).eq('id',editingId);if(error)throw error;showToast('Atualizado!');}
-      else{const{error}=await supabase.from('lembretes').insert(payload);if(error)throw error;showToast('Criado!');}
+      if(editingId){delete payload.user_id;const{error}=await window._sb.from('lembretes').update(payload).eq('id',editingId);if(error)throw error;showToast('Atualizado!');}
+      else{const{error}=await window._sb.from('lembretes').insert(payload);if(error)throw error;showToast('Criado!');}
       closeModals();await loadLembretes();
     }catch(err){showToast('Erro: '+err.message,'error');}
     finally{btn.disabled=false;btn.innerHTML='Salvar lembrete';}
   }
 
-  window.concluirLem=async(id)=>{try{const{error}=await supabase.from('lembretes').update({status:'concluido'}).eq('id',id);if(error)throw error;showToast('Concluído!');await loadLembretes();}catch(err){showToast('Erro: '+err.message,'error');}};
+  window.concluirLem=async(id)=>{try{const{error}=await window._sb.from('lembretes').update({status:'concluido'}).eq('id',id);if(error)throw error;showToast('Concluído!');await loadLembretes();}catch(err){showToast('Erro: '+err.message,'error');}};
   window.viewLemDetalhe=(id)=>{const l=allLembretes.find(x=>x.id===id);if(!l)return;detalheItem=l;
     document.getElementById('lemDetalheContent').innerHTML=`<div class="detail-grid">
       <div class="detail-item full"><span class="detail-label">Título</span><span class="detail-value" style="font-size:1.05rem;font-weight:600">${esc(l.titulo)}</span></div>
@@ -122,7 +122,7 @@
     document.getElementById('lemObservacoes').value=l.observacoes||'';
     document.getElementById('modalLem').classList.add('open');};
   window.deleteLem=(id,titulo)=>{showConfirm({title:'Excluir lembrete',text:`"<strong>${titulo}</strong>" será excluído.`,
-    onConfirm:async()=>{try{const{error}=await supabase.from('lembretes').delete().eq('id',id);if(error)throw error;showToast('Excluído.');await loadLembretes();}catch(err){showToast('Erro: '+err.message,'error');}}});};
+    onConfirm:async()=>{try{const{error}=await window._sb.from('lembretes').delete().eq('id',id);if(error)throw error;showToast('Excluído.');await loadLembretes();}catch(err){showToast('Erro: '+err.message,'error');}}});};
 
   function openNewModal(){editingId=null;document.getElementById('modalLemTitle').textContent='Novo lembrete';document.getElementById('formLem').reset();document.getElementById('lemData').value=TODAY;document.getElementById('modalLem').classList.add('open');}
   function closeModals(){document.getElementById('modalLem').classList.remove('open');document.getElementById('modalLemDetalhe').classList.remove('open');}
@@ -146,3 +146,4 @@
 
   await loadLembretes();
 })();
+
