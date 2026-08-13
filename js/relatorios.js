@@ -31,9 +31,9 @@
 
     try {
       const [demRes,solRes,lemRes] = await Promise.all([
-        inclDem ? supabase.from('demandas').select('*').gte('created_at',dataInicio+'T00:00:00').lte('created_at',dataFim+'T23:59:59').order('created_at') : Promise.resolve({data:[]}),
-        inclSol ? supabase.from('solicitacoes').select('*').gte('created_at',dataInicio+'T00:00:00').lte('created_at',dataFim+'T23:59:59').order('created_at') : Promise.resolve({data:[]}),
-        inclLem ? supabase.from('lembretes').select('*').gte('data_lembrete',dataInicio).lte('data_lembrete',dataFim).order('data_lembrete') : Promise.resolve({data:[]})
+        inclDem ? window._sb.from('demandas').select('*').gte('created_at',dataInicio+'T00:00:00').lte('created_at',dataFim+'T23:59:59').order('created_at') : Promise.resolve({data:[]}),
+        inclSol ? window._sb.from('solicitacoes').select('*').gte('created_at',dataInicio+'T00:00:00').lte('created_at',dataFim+'T23:59:59').order('created_at') : Promise.resolve({data:[]}),
+        inclLem ? window._sb.from('lembretes').select('*').gte('data_lembrete',dataInicio).lte('data_lembrete',dataFim).order('data_lembrete') : Promise.resolve({data:[]})
       ]);
       if(demRes.error) throw demRes.error;
       if(solRes.error) throw solRes.error;
@@ -87,3 +87,5 @@
     showToast(`Relatório com ${total} registro${total!==1?'s':''}.`, total>0?'success':'info');
   }
 })();
+
+
