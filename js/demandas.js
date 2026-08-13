@@ -8,7 +8,7 @@
 
   async function loadDemandas() {
     try {
-      const { data, error } = await supabase.from('demandas').select('*').order('created_at', { ascending: false });
+      const { data, error } = await window._sb.from('demandas').select('*').order('created_at', { ascending: false });
       if (error) throw error;
       allDemandas = data || [];
       renderTable(applyFilters());
@@ -68,8 +68,8 @@
     btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Salvando...';
     const payload = { titulo, descricao: descricao||null, responsavel, prazo: prazo||null, prioridade, status, observacoes: observacoes||null, user_id: user.id };
     try {
-      if (editingId) { delete payload.user_id; const {error} = await supabase.from('demandas').update(payload).eq('id', editingId); if(error) throw error; showToast('Demanda atualizada!'); }
-      else { const {error} = await supabase.from('demandas').insert(payload); if(error) throw error; showToast('Demanda criada!'); }
+      if (editingId) { delete payload.user_id; const {error} = await window._sb.from('demandas').update(payload).eq('id', editingId); if(error) throw error; showToast('Demanda atualizada!'); }
+      else { const {error} = await window._sb.from('demandas').insert(payload); if(error) throw error; showToast('Demanda criada!'); }
       closeModal(); await loadDemandas();
     } catch(err) { showToast('Erro: '+err.message, 'error'); }
     finally { btn.disabled=false; btn.innerHTML='Salvar demanda'; }
@@ -112,7 +112,7 @@
   window.deleteDemanda = (id, titulo) => {
     showConfirm({ title:'Excluir demanda', text:`A demanda "<strong>${titulo}</strong>" será excluída permanentemente.`,
       onConfirm: async () => {
-        try { const {error} = await supabase.from('demandas').delete().eq('id',id); if(error) throw error; showToast('Excluída.'); await loadDemandas(); }
+        try { const {error} = await window._sb.from('demandas').delete().eq('id',id); if(error) throw error; showToast('Excluída.'); await loadDemandas(); }
         catch(err) { showToast('Erro: '+err.message,'error'); }
       }});
   };
@@ -151,3 +151,4 @@
 
   await loadDemandas();
 })();
+
