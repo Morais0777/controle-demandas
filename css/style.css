@@ -321,8 +321,6 @@ body {
   padding: 24px;
   max-width: 1400px;
   width: 100%;
-  min-height: calc(100vh - var(--header-height));
-  background: var(--color-bg);
 }
 
 /* ── Mobile Overlay ───────────────────────────────────────── */
@@ -351,5 +349,6 @@ a:hover { text-decoration: underline; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--color-text-subtle); }
+
 
 
