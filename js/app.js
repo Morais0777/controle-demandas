@@ -194,7 +194,6 @@ function renderLayout(activeSection) {
     </a>`).join('');
 
   const sidebarHTML = `
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-logo">
         <div class="sidebar-logo-icon">
@@ -223,12 +222,25 @@ function renderLayout(activeSection) {
       </div>
     </aside>`;
 
+  // Overlay separado, posicionado como fixed fora do fluxo
+  if (!document.getElementById('sidebarOverlay')) {
+    document.body.insertAdjacentHTML('beforeend', '<div class="sidebar-overlay" id="sidebarOverlay"></div>');
+  }
+
   const layout = document.getElementById('appLayout');
   if (layout) {
-    layout.insertAdjacentHTML('beforebegin', sidebarHTML);
+    // Insere a sidebar como primeiro filho do appLayout para evitar gaps
+    layout.insertAdjacentHTML('afterbegin', sidebarHTML);
+    // Garante que o app-layout seja um flex sem gaps
+    layout.style.display = 'flex';
+    layout.style.minHeight = '100vh';
+    layout.style.gap = '0';
+    layout.style.margin = '0';
+    layout.style.padding = '0';
   }
   if (!document.getElementById('toastContainer')) {
     document.body.insertAdjacentHTML('beforeend', '<div class="toast-container" id="toastContainer"></div>');
   }
 }
+
 
