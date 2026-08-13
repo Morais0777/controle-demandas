@@ -8,7 +8,7 @@
 
   async function loadSolicitacoes() {
     try {
-      const { data, error } = await supabase.from('solicitacoes').select('*').order('created_at', { ascending: false });
+      const { data, error } = await window._sb.from('solicitacoes').select('*').order('created_at', { ascending: false });
       if (error) throw error;
       allSolicitacoes = data || [];
       renderTable(applyFilters());
@@ -62,8 +62,8 @@
     const btn=document.getElementById('btnSaveSol'); btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Salvando...';
     const payload={titulo,descricao:descricao||null,solicitante,responsavel,prioridade,status,prazo:prazo||null,observacoes:observacoes||null,user_id:user.id};
     try {
-      if(editingId){delete payload.user_id;const{error}=await supabase.from('solicitacoes').update(payload).eq('id',editingId);if(error)throw error;showToast('Atualizada!');}
-      else{const{error}=await supabase.from('solicitacoes').insert(payload);if(error)throw error;showToast('Criada!');}
+      if(editingId){delete payload.user_id;const{error}=await window._sb.from('solicitacoes').update(payload).eq('id',editingId);if(error)throw error;showToast('Atualizada!');}
+      else{const{error}=await window._sb.from('solicitacoes').insert(payload);if(error)throw error;showToast('Criada!');}
       closeModals(); await loadSolicitacoes();
     } catch(err){showToast('Erro: '+err.message,'error');}
     finally{btn.disabled=false;btn.innerHTML='Salvar solicitação';}
@@ -98,7 +98,7 @@
   };
   window.deleteSol = (id,titulo) => {
     showConfirm({title:'Excluir solicitação',text:`"<strong>${titulo}</strong>" será excluída.`,
-      onConfirm:async()=>{try{const{error}=await supabase.from('solicitacoes').delete().eq('id',id);if(error)throw error;showToast('Excluída.');await loadSolicitacoes();}catch(err){showToast('Erro: '+err.message,'error');}}});
+      onConfirm:async()=>{try{const{error}=await window._sb.from('solicitacoes').delete().eq('id',id);if(error)throw error;showToast('Excluída.');await loadSolicitacoes();}catch(err){showToast('Erro: '+err.message,'error');}}});
   };
 
   function openNewModal(){editingId=null;document.getElementById('modalSolTitle').textContent='Nova solicitação';document.getElementById('formSol').reset();document.getElementById('modalSol').classList.add('open');}
@@ -125,3 +125,4 @@
 
   await loadSolicitacoes();
 })();
+
