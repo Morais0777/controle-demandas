@@ -91,7 +91,7 @@ function aplicarTemaSelecionado(tema) {
 
 // ── Helper: exibir mensagem de status ────────────────────────
 function exibirStatus(el, tipo, texto) {
-  el.className = `config-status-msg ${tipo} visible`;
+  el.className = `cfg-status ${tipo} visible`;
   el.textContent = texto;
   clearTimeout(el._timer);
   el._timer = setTimeout(() => el.classList.remove('visible'), 3500);

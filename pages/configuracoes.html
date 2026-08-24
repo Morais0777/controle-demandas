@@ -11,227 +11,226 @@
   <link rel="stylesheet" href="../css/components.css">
   <link rel="stylesheet" href="../css/home.css">
   <style>
-    /* ── Configurações: layout geral ── */
+    /* ── Configurações: página ── */
     .config-page {
-      padding: 32px 28px;
-      max-width: 720px;
+      padding: 32px 32px 48px;
+      max-width: 660px;
     }
 
-    /* Cabeçalho da página */
-    .config-page-header {
-      display: flex;
-      align-items: flex-start;
-      gap: 16px;
-      margin-bottom: 36px;
-      padding-bottom: 28px;
-      border-bottom: 1px solid var(--border);
-    }
-    .config-page-header-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 12px;
-      background: var(--primary-light, rgba(99,102,241,0.1));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--primary);
-      flex-shrink: 0;
-    }
+    /* Título simples no topo */
     .config-page-title {
-      font-size: 1.375rem;
+      font-size: 1.5rem;
       font-weight: 700;
       color: var(--text-primary);
       margin: 0 0 4px;
-      line-height: 1.2;
     }
     .config-page-sub {
       font-size: 0.875rem;
       color: var(--text-secondary);
-      margin: 0;
+      margin: 0 0 32px;
     }
 
-    /* Seções com label lateral */
-    .config-section {
-      display: grid;
-      grid-template-columns: 200px 1fr;
-      gap: 32px;
-      padding: 28px 0;
-      border-bottom: 1px solid var(--border);
+    /* Cards de seção */
+    .cfg-card {
+      background: var(--surface, #fff);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      margin-bottom: 20px;
+      overflow: hidden;
     }
-    .config-section:last-child {
-      border-bottom: none;
-      padding-bottom: 0;
+
+    /* Cabeçalho do card */
+    .cfg-card-head {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 20px 24px 0;
     }
-    .config-section-label {
-      padding-top: 2px;
+    .cfg-card-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: var(--primary-light, rgba(99,102,241,0.1));
+      color: var(--primary, #6366f1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
     }
-    .config-section-label h3 {
+    .cfg-card-head-text h3 {
       font-size: 0.9375rem;
       font-weight: 600;
       color: var(--text-primary);
-      margin: 0 0 4px;
+      margin: 0 0 2px;
     }
-    .config-section-label p {
+    .cfg-card-head-text p {
       font-size: 0.8125rem;
       color: var(--text-secondary);
       margin: 0;
-      line-height: 1.5;
     }
-    .config-section-body {
+
+    /* Divisor interno */
+    .cfg-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 20px 24px 0;
+    }
+
+    /* Corpo do card */
+    .cfg-card-body {
+      padding: 20px 24px 24px;
       display: flex;
       flex-direction: column;
       gap: 16px;
     }
 
     /* Preview do usuário */
-    .user-preview {
+    .cfg-user-row {
       display: flex;
       align-items: center;
       gap: 14px;
-      padding: 14px 16px;
-      background: var(--bg, rgba(0,0,0,0.03));
+      padding: 12px 14px;
       border: 1px solid var(--border);
       border-radius: 10px;
+      background: var(--bg-subtle, rgba(99,102,241,0.04));
     }
-    .user-preview-avatar {
-      width: 44px;
-      height: 44px;
+    .cfg-avatar {
+      width: 42px;
+      height: 42px;
       border-radius: 50%;
       background: var(--primary, #6366f1);
       color: #fff;
+      font-size: 0.9375rem;
+      font-weight: 700;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1rem;
-      font-weight: 700;
       flex-shrink: 0;
       letter-spacing: -0.5px;
-      transition: background 0.2s;
     }
-    .user-preview-info {
-      min-width: 0;
-    }
-    .user-preview-name {
+    .cfg-user-info { min-width: 0; }
+    .cfg-user-name {
       font-size: 0.9375rem;
       font-weight: 600;
       color: var(--text-primary);
-      white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      white-space: nowrap;
     }
-    .user-preview-email {
+    .cfg-user-email {
       font-size: 0.8125rem;
       color: var(--text-secondary);
-      white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      white-space: nowrap;
       margin-top: 1px;
     }
 
-    /* Campos de formulário */
-    .config-field {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .config-field label {
+    /* Campo de formulário */
+    .cfg-field { display: flex; flex-direction: column; gap: 6px; }
+    .cfg-field label {
       font-size: 0.8125rem;
       font-weight: 500;
       color: var(--text-primary);
     }
-    .config-field .form-control {
-      width: 100%;
-      box-sizing: border-box;
-    }
-    .config-field .field-hint {
+    .cfg-field .form-control { width: 100%; box-sizing: border-box; }
+    .cfg-field-hint {
       font-size: 0.75rem;
       color: var(--text-secondary);
       margin: 0;
     }
 
-    /* Rodapé da ação */
-    .config-action-row {
+    /* Linha de ação */
+    .cfg-action-row {
       display: flex;
       align-items: center;
       gap: 12px;
-      padding-top: 4px;
     }
-    .config-status-msg {
+    .cfg-status {
       font-size: 0.8125rem;
       font-weight: 500;
       opacity: 0;
       transition: opacity 0.3s;
     }
-    .config-status-msg.visible { opacity: 1; }
-    .config-status-msg.success { color: var(--success, #22c55e); }
-    .config-status-msg.error   { color: var(--danger,  #ef4444); }
+    .cfg-status.visible { opacity: 1; }
+    .cfg-status.success { color: var(--success, #22c55e); }
+    .cfg-status.error   { color: var(--danger,  #ef4444); }
 
-    /* Seletor de tema */
-    .theme-grid {
+    /* Seletor de tema — cards grandes */
+    .cfg-theme-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-    .theme-option {
-      position: relative;
-      cursor: pointer;
-    }
-    .theme-option input[type="radio"] {
-      position: absolute;
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-    .theme-option-label {
-      display: flex;
-      align-items: center;
       gap: 12px;
-      padding: 14px 16px;
+    }
+    .cfg-theme-opt { position: relative; }
+    .cfg-theme-opt input[type="radio"] {
+      position: absolute; opacity: 0; width: 0; height: 0;
+    }
+    .cfg-theme-card {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 14px;
       border: 1.5px solid var(--border);
-      border-radius: 10px;
-      background: var(--bg, rgba(0,0,0,0.02));
+      border-radius: 12px;
       cursor: pointer;
-      transition: border-color 0.15s, background 0.15s;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      background: var(--surface, #fff);
     }
-    .theme-option input[type="radio"]:checked + .theme-option-label {
+    .cfg-theme-opt input:checked + .cfg-theme-card {
       border-color: var(--primary, #6366f1);
-      background: var(--primary-light, rgba(99,102,241,0.07));
+      box-shadow: 0 0 0 3px rgba(99,102,241,0.12);
     }
-    .theme-preview {
-      width: 36px;
-      height: 26px;
-      border-radius: 5px;
-      border: 1px solid var(--border);
+
+    /* Miniatura do tema */
+    .cfg-theme-thumb {
+      width: 100%;
+      height: 56px;
+      border-radius: 7px;
       overflow: hidden;
-      flex-shrink: 0;
+      border: 1px solid var(--border);
       display: flex;
       flex-direction: column;
     }
-    .theme-preview-bar {
-      height: 8px;
-      background: var(--primary, #6366f1);
-    }
-    .theme-preview-body {
+    .cfg-theme-thumb-bar { height: 14px; background: var(--primary, #6366f1); }
+    .cfg-theme-thumb-body {
       flex: 1;
+      display: grid;
+      grid-template-columns: 60px 1fr;
+    }
+    .cfg-theme-thumb-sidebar { border-right: 1px solid; }
+    .cfg-theme-thumb-content {
       display: flex;
-      gap: 3px;
-      padding: 3px 4px;
+      flex-direction: column;
+      justify-content: center;
+      gap: 4px;
+      padding: 6px 8px;
     }
-    .theme-preview-line {
-      border-radius: 2px;
-      height: 100%;
+    .cfg-theme-thumb-line {
+      border-radius: 3px;
+      height: 5px;
     }
-    .theme-light .theme-preview-body { background: #f5f5f5; }
-    .theme-light .theme-preview-line { background: #d1d5db; }
-    .theme-dark  .theme-preview-body { background: #1e1e2e; }
-    .theme-dark  .theme-preview-line { background: #374151; }
-    .theme-option-text {
+
+    /* Cores por tema */
+    .thumb-light .cfg-theme-thumb-body { background: #f8f9fa; }
+    .thumb-light .cfg-theme-thumb-sidebar { background: #eef0f4; border-color: #e2e5ea; }
+    .thumb-light .cfg-theme-thumb-line { background: #d1d5db; }
+    .thumb-dark  .cfg-theme-thumb-body { background: #1a1b2e; }
+    .thumb-dark  .cfg-theme-thumb-sidebar { background: #141526; border-color: #2a2b40; }
+    .thumb-dark  .cfg-theme-thumb-line { background: #374151; }
+
+    /* Rodapé do card de tema */
+    .cfg-theme-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .cfg-theme-label {
       font-size: 0.875rem;
       font-weight: 500;
       color: var(--text-primary);
-      flex: 1;
     }
-    .theme-option-check {
+    .cfg-theme-radio {
       width: 18px;
       height: 18px;
       border-radius: 50%;
@@ -240,13 +239,12 @@
       align-items: center;
       justify-content: center;
       transition: all 0.15s;
-      flex-shrink: 0;
     }
-    .theme-option input[type="radio"]:checked + .theme-option-label .theme-option-check {
+    .cfg-theme-opt input:checked + .cfg-theme-card .cfg-theme-radio {
       background: var(--primary, #6366f1);
       border-color: var(--primary, #6366f1);
     }
-    .theme-option input[type="radio"]:checked + .theme-option-label .theme-option-check::after {
+    .cfg-theme-opt input:checked + .cfg-theme-card .cfg-theme-radio::after {
       content: '';
       width: 6px;
       height: 6px;
@@ -256,11 +254,11 @@
     }
 
     /* Responsivo */
-    @media (max-width: 640px) {
-      .config-page { padding: 20px 16px; }
-      .config-section { grid-template-columns: 1fr; gap: 16px; }
-      .theme-grid { grid-template-columns: 1fr; }
-      .config-page-header { flex-direction: column; gap: 12px; }
+    @media (max-width: 600px) {
+      .config-page { padding: 20px 16px 40px; }
+      .cfg-card-head, .cfg-card-body { padding-left: 16px; padding-right: 16px; }
+      .cfg-divider { margin-left: 16px; margin-right: 16px; }
+      .cfg-theme-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -286,95 +284,108 @@
       <!-- Conteúdo principal -->
       <main class="page-content config-page">
 
-        <!-- Cabeçalho da página -->
-        <div class="config-page-header">
-          <div class="config-page-header-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
-          </div>
-          <div>
-            <h2 class="config-page-title">Configurações</h2>
-            <p class="config-page-sub">Personalize sua conta e a aparência do sistema.</p>
-          </div>
-        </div>
+        <h2 class="config-page-title">Configurações</h2>
+        <p class="config-page-sub">Personalize sua conta e a aparência do sistema.</p>
 
-        <!-- ── Seção: Perfil ─────────────────────────────── -->
-        <div class="config-section">
-          <div class="config-section-label">
-            <h3>Perfil</h3>
-            <p>Seu nome é exibido na sidebar e no avatar do sistema.</p>
+        <!-- ── Card: Perfil ──────────────────────────────── -->
+        <div class="cfg-card">
+          <div class="cfg-card-head">
+            <div class="cfg-card-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <div class="cfg-card-head-text">
+              <h3>Perfil</h3>
+              <p>Altere como seu nome é exibido no sistema.</p>
+            </div>
           </div>
-          <div class="config-section-body">
-            <!-- Preview -->
-            <div class="user-preview">
-              <div class="user-preview-avatar" id="avatarPreview">?</div>
-              <div class="user-preview-info">
-                <div class="user-preview-name" id="previewName">Carregando…</div>
-                <div class="user-preview-email" id="previewEmail">—</div>
+          <div class="cfg-divider"></div>
+          <div class="cfg-card-body">
+            <!-- Preview do usuário -->
+            <div class="cfg-user-row">
+              <div class="cfg-avatar" id="avatarPreview">?</div>
+              <div class="cfg-user-info">
+                <div class="cfg-user-name" id="previewName">Carregando…</div>
+                <div class="cfg-user-email" id="previewEmail">—</div>
               </div>
             </div>
-            <!-- Campo nome -->
-            <div class="config-field">
+            <!-- Campo -->
+            <div class="cfg-field">
               <label for="inputNome">Nome de usuário</label>
-              <input
-                type="text"
-                id="inputNome"
-                class="form-control"
-                placeholder="Ex: Maycon Morais"
-                maxlength="60"
-                autocomplete="name"
-              >
-              <p class="field-hint">Aparece na sidebar e nas iniciais do avatar.</p>
+              <input type="text" id="inputNome" class="form-control"
+                placeholder="Ex: Maycon Morais" maxlength="60" autocomplete="name">
+              <p class="cfg-field-hint">Exibido na sidebar e nas iniciais do avatar.</p>
             </div>
             <!-- Ação -->
-            <div class="config-action-row">
+            <div class="cfg-action-row">
               <button class="btn btn-primary" id="btnSalvarPerfil" onclick="salvarPerfil()">
                 Salvar alterações
               </button>
-              <span class="config-status-msg" id="statusPerfil"></span>
+              <span class="cfg-status" id="statusPerfil"></span>
             </div>
           </div>
         </div>
 
-        <!-- ── Seção: Aparência ──────────────────────────── -->
-        <div class="config-section">
-          <div class="config-section-label">
-            <h3>Aparência</h3>
-            <p>Escolha o tema visual do sistema. A preferência é salva automaticamente.</p>
-          </div>
-          <div class="config-section-body">
-            <div class="theme-grid">
-              <!-- Tema Claro -->
-              <label class="theme-option">
-                <input type="radio" name="tema" value="light" id="temaLight" onchange="aplicarTemaSelecionado('light')">
-                <span class="theme-option-label">
-                  <span class="theme-preview theme-light">
-                    <span class="theme-preview-bar"></span>
-                    <span class="theme-preview-body">
-                      <span class="theme-preview-line" style="flex:2"></span>
-                      <span class="theme-preview-line" style="flex:1"></span>
-                    </span>
-                  </span>
-                  <span class="theme-option-text">Claro</span>
-                  <span class="theme-option-check"></span>
-                </span>
-              </label>
-              <!-- Tema Escuro -->
-              <label class="theme-option">
-                <input type="radio" name="tema" value="dark" id="temaDark" onchange="aplicarTemaSelecionado('dark')">
-                <span class="theme-option-label">
-                  <span class="theme-preview theme-dark">
-                    <span class="theme-preview-bar"></span>
-                    <span class="theme-preview-body">
-                      <span class="theme-preview-line" style="flex:2"></span>
-                      <span class="theme-preview-line" style="flex:1"></span>
-                    </span>
-                  </span>
-                  <span class="theme-option-text">Escuro</span>
-                  <span class="theme-option-check"></span>
-                </span>
-              </label>
+        <!-- ── Card: Aparência ───────────────────────────── -->
+        <div class="cfg-card">
+          <div class="cfg-card-head">
+            <div class="cfg-card-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
             </div>
-            <span class="config-status-msg" id="statusTema" style="opacity:0"></span>
+            <div class="cfg-card-head-text">
+              <h3>Aparência</h3>
+              <p>Escolha o tema visual. A preferência é salva automaticamente.</p>
+            </div>
+          </div>
+          <div class="cfg-divider"></div>
+          <div class="cfg-card-body">
+            <div class="cfg-theme-grid">
+
+              <!-- Tema Claro -->
+              <label class="cfg-theme-opt">
+                <input type="radio" name="tema" value="light" id="temaLight" onchange="aplicarTemaSelecionado('light')">
+                <div class="cfg-theme-card">
+                  <div class="cfg-theme-thumb thumb-light">
+                    <div class="cfg-theme-thumb-bar"></div>
+                    <div class="cfg-theme-thumb-body">
+                      <div class="cfg-theme-thumb-sidebar"></div>
+                      <div class="cfg-theme-thumb-content">
+                        <div class="cfg-theme-thumb-line" style="width:70%"></div>
+                        <div class="cfg-theme-thumb-line" style="width:50%"></div>
+                        <div class="cfg-theme-thumb-line" style="width:60%"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="cfg-theme-footer">
+                    <span class="cfg-theme-label">☀️ Claro</span>
+                    <span class="cfg-theme-radio"></span>
+                  </div>
+                </div>
+              </label>
+
+              <!-- Tema Escuro -->
+              <label class="cfg-theme-opt">
+                <input type="radio" name="tema" value="dark" id="temaDark" onchange="aplicarTemaSelecionado('dark')">
+                <div class="cfg-theme-card">
+                  <div class="cfg-theme-thumb thumb-dark">
+                    <div class="cfg-theme-thumb-bar"></div>
+                    <div class="cfg-theme-thumb-body">
+                      <div class="cfg-theme-thumb-sidebar"></div>
+                      <div class="cfg-theme-thumb-content">
+                        <div class="cfg-theme-thumb-line" style="width:70%"></div>
+                        <div class="cfg-theme-thumb-line" style="width:50%"></div>
+                        <div class="cfg-theme-thumb-line" style="width:60%"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="cfg-theme-footer">
+                    <span class="cfg-theme-label">🌙 Escuro</span>
+                    <span class="cfg-theme-radio"></span>
+                  </div>
+                </div>
+              </label>
+
+            </div>
+            <span class="cfg-status" id="statusTema"></span>
           </div>
         </div>
 
@@ -388,3 +399,4 @@
   <script src="../js/configuracoes.js"></script>
 </body>
 </html>
+
