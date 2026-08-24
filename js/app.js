@@ -3,13 +3,27 @@
 // Funciona sem módulos ES6 — compatível com GitHub Pages
 // ============================================================
 
-// ── Cliente Supabase ─────────────────────────────────────────
-// persistSession: false  → sem login automático ao reabrir o navegador
-// autoRefreshToken: false → consistente com a ausência de sessão persistente
+// ── Storage customizado usando sessionStorage ─────────────────
+// Sessão funciona normalmente dentro da aba aberta,
+// mas some automaticamente ao fechar o navegador/aba.
+const _sessionStorageAdapter = {
+  getItem:    (key)        => sessionStorage.getItem(key),
+  setItem:    (key, value) => sessionStorage.setItem(key, value),
+  removeItem: (key)        => sessionStorage.removeItem(key),
+};
+
+// ── Cliente Supabase ──────────────────────────────────────────
 const _supabaseClient = window.supabase.createClient(
   SUPABASE_CONFIG.url,
   SUPABASE_CONFIG.anonKey,
-  { auth: { autoRefreshToken: false, persistSession: false } }
+  {
+    auth: {
+      storage: _sessionStorageAdapter,
+      autoRefreshToken: true,
+      persistSession: true,    // true, mas salva em sessionStorage (não localStorage)
+      detectSessionInUrl: true,
+    }
+  }
 );
 window._sb = _supabaseClient;
 
@@ -23,7 +37,6 @@ async function initPage(pageTitle) {
     return null;
   }
 
-  // Carrega o perfil (display_name) do banco e popula a sidebar
   await populateUser(session.user);
   highlightNav();
 
@@ -65,13 +78,10 @@ function updateThemeIcon(theme) {
 }
 
 // ── Usuário na Sidebar ────────────────────────────────────────
-// Busca o display_name na tabela profiles.
-// Fallback: user_metadata.display_name → parte do e-mail (apenas se não houver nome).
 async function populateUser(user) {
   const email = user?.email || '';
   let displayName = '';
 
-  // 1. Tenta carregar da tabela profiles
   try {
     const { data: profile } = await _supabaseClient
       .from('profiles')
@@ -79,17 +89,13 @@ async function populateUser(user) {
       .eq('id', user.id)
       .single();
     if (profile?.display_name) displayName = profile.display_name;
-  } catch (_) { /* ignora */ }
+  } catch (_) {}
 
-  // 2. Fallback: user_metadata (salvo no signUp)
   if (!displayName && user?.user_metadata?.display_name) {
     displayName = user.user_metadata.display_name;
   }
-
-  // 3. Último fallback: parte antes do @ (só para usuários antigos sem nome)
   if (!displayName) displayName = email.split('@')[0];
 
-  // Gera as iniciais a partir do nome (ex: "Maycon Morais" → "MM")
   const initials = displayName
     .trim()
     .split(/\s+/)
@@ -104,7 +110,6 @@ async function populateUser(user) {
   if (elName)   elName.textContent   = displayName;
   if (elEmail)  elEmail.textContent  = email;
 
-  // Guarda em window para uso na página de configurações
   window._currentDisplayName = displayName;
   window._currentUser = user;
 }
@@ -219,18 +224,16 @@ function esc(str) {
 
 // ── renderLayout — inclui item Configurações na nav ───────────
 function renderLayout(activeSection) {
-  const navItems = [
-    { href: 'dashboard.html',      label: 'Dashboard',      section: 'dashboard',      icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>' },
-    { href: 'demandas.html',       label: 'Demandas',       section: 'demandas',       icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg>' },
-    { href: 'solicitacoes.html',   label: 'Solicitações',   section: 'solicitacoes',   icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>' },
-    { href: 'lembretes.html',      label: 'Lembretes',      section: 'lembretes',      icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>' },
-    { href: 'relatorios.html',     label: 'Relatórios',     section: 'relatorios',     icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>' },
-    { href: 'configuracoes.html',  label: 'Configurações',  section: 'configuracoes',  icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>' },
+  const mainItems = [
+    { href: 'dashboard.html',     label: 'Dashboard',     section: 'dashboard',     icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>' },
+    { href: 'demandas.html',      label: 'Demandas',      section: 'demandas',      icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg>' },
+    { href: 'solicitacoes.html',  label: 'Solicitações',  section: 'solicitacoes',  icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>' },
+    { href: 'lembretes.html',     label: 'Lembretes',     section: 'lembretes',     icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>' },
+    { href: 'relatorios.html',    label: 'Relatórios',    section: 'relatorios',    icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>' },
   ];
-
-  // Separa os itens principais dos de configurações para criar seção separada
-  const mainItems   = navItems.slice(0, 5);
-  const configItems = navItems.slice(5);
+  const configItems = [
+    { href: 'configuracoes.html', label: 'Configurações', section: 'configuracoes', icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>' },
+  ];
 
   const buildNav = (items) => items.map(item => `
     <a href="${item.href}" class="sidebar-nav-item ${activeSection === item.section ? 'active' : ''}">
@@ -285,3 +288,4 @@ function renderLayout(activeSection) {
     document.body.insertAdjacentHTML('beforeend', '<div class="toast-container" id="toastContainer"></div>');
   }
 }
+
