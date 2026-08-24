@@ -1,6 +1,5 @@
 // lembretes.js — sem módulos ES6
 (async function() {
-  renderLayout('lembretes');
   const user = await initPage('Lembretes');
   if (!user) return;
 

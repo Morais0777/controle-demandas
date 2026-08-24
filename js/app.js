@@ -9,6 +9,7 @@ const supabase = window.supabase.createClient(
   SUPABASE_CONFIG.anonKey,
   { auth: { autoRefreshToken: true, persistSession: true } }
 );
+window._sb = supabase; // expõe para dashboard.js, demandas.js, etc.
 
 // ── Proteção de rota ──────────────────────────────────────────
 async function initPage(pageTitle) {

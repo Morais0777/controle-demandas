@@ -1,6 +1,5 @@
 // dashboard.js — sem módulos ES6
 (async function() {
-  renderLayout('dashboard');
   const user = await initPage('Dashboard');
   if (!user) return;
 

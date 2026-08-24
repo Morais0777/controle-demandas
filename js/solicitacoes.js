@@ -1,6 +1,5 @@
 // solicitacoes.js — sem módulos ES6
 (async function() {
-  renderLayout('solicitacoes');
   const user = await initPage('Solicitações');
   if (!user) return;
 

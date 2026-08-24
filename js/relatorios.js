@@ -1,6 +1,5 @@
 // relatorios.js — sem módulos ES6
 (async function() {
-  renderLayout('relatorios');
   const user = await initPage('Relatórios');
   if (!user) return;
 
