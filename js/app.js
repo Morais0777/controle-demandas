@@ -17,8 +17,7 @@ window._sb = _supabaseClient;
 async function initPage(pageTitle) {
   applyTheme();
 
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session) {
+   const { data: { session } } = await _supabaseClient.auth.getSession();  if (!session) {
     window.location.replace('../login.html');
     return null;
   }
