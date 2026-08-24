@@ -96,3 +96,4 @@ function exibirStatus(el, tipo, texto) {
   clearTimeout(el._timer);
   el._timer = setTimeout(() => el.classList.remove('visible'), 3500);
 }
+

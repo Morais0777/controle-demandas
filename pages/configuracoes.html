@@ -11,92 +11,155 @@
   <link rel="stylesheet" href="../css/components.css">
   <link rel="stylesheet" href="../css/home.css">
   <style>
-    /* ── Configurações: página ── */
-    .config-page {
-      padding: 32px 32px 48px;
-      max-width: 660px;
+    /* ══════════════════════════════════════════════════════════════
+       CONFIGURAÇÕES — estilos locais (escopo: apenas esta página)
+
+       PROBLEMA CORRIGIDO:
+       Os cards usavam background: var(--surface, #fff) e
+       background: var(--bg-subtle, rgba(...)), onde --surface e
+       --border provavelmente não estavam definidos para o tema
+       escuro em variables.css, fazendo os cards ficarem brancos.
+
+       SOLUÇÃO:
+       Criamos variáveis locais com prefixo --cfg- que são
+       explicitamente definidas para [data-theme="light"] e
+       [data-theme="dark"]. Essas variáveis são isoladas desta
+       página e não afetam outras páginas do sistema.
+       ══════════════════════════════════════════════════════════════ */
+
+    /* ── Tokens locais — TEMA CLARO ─────────────────────────────── */
+    :root,
+    [data-theme="light"] {
+      --cfg-card-bg:      #ffffff;
+      --cfg-subtle-bg:    #f5f6fa;
+      --cfg-border:       rgba(0, 0, 0, 0.08);
+      --cfg-border-solid: #e4e6ed;
+      --cfg-icon-bg:      rgba(99, 102, 241, 0.08);
+      --cfg-shadow-sm:    0 1px 3px rgba(0, 0, 0, 0.06),
+                          0 1px 2px rgba(0, 0, 0, 0.04);
     }
 
-    /* Título simples no topo */
+    /* ── Tokens locais — TEMA ESCURO ─────────────────────────────── */
+    /*
+       --cfg-card-bg: cor sólida escura para os cards (sem fallback branco)
+       --cfg-subtle-bg: fundo levemente diferente do card para profundidade
+       --cfg-border: borda sutil em cima de fundos escuros
+       --cfg-icon-bg: destaque do ícone com mais opacidade no escuro
+       --cfg-shadow-sm: sombra mais intensa, necessária em fundos escuros
+    */
+    [data-theme="dark"] {
+      --cfg-card-bg:      #1e2035;
+      --cfg-subtle-bg:    rgba(255, 255, 255, 0.04);
+      --cfg-border:       rgba(255, 255, 255, 0.08);
+      --cfg-border-solid: rgba(255, 255, 255, 0.09);
+      --cfg-icon-bg:      rgba(99, 102, 241, 0.18);
+      --cfg-shadow-sm:    0 2px 8px rgba(0, 0, 0, 0.45),
+                          0 4px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    /* ── Layout da página ──────────────────────────────────────── */
+    .config-page {
+      padding: 32px 32px 56px;
+      max-width: 680px;
+    }
+
+    /* ── Cabeçalho da página ───────────────────────────────────── */
     .config-page-title {
       font-size: 1.5rem;
       font-weight: 700;
       color: var(--text-primary);
-      margin: 0 0 4px;
+      margin: 0 0 6px;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
     }
+
     .config-page-sub {
       font-size: 0.875rem;
       color: var(--text-secondary);
-      margin: 0 0 32px;
+      margin: 0 0 28px;
+      line-height: 1.5;
     }
 
-    /* Cards de seção */
+    /* ── Cards de seção ────────────────────────────────────────── */
+    /* Usa --cfg-card-bg (sólido e correto em ambos os temas) em vez
+       de var(--surface, #fff) que causava o fundo branco no escuro. */
     .cfg-card {
-      background: var(--surface, #fff);
-      border: 1px solid var(--border);
-      border-radius: 14px;
+      background: var(--cfg-card-bg);
+      border: 1px solid var(--cfg-border-solid);
+      border-radius: 16px;
       margin-bottom: 20px;
       overflow: hidden;
+      box-shadow: var(--cfg-shadow-sm);
+      transition: box-shadow 0.2s ease;
     }
 
-    /* Cabeçalho do card */
+    /* ── Cabeçalho do card ─────────────────────────────────────── */
     .cfg-card-head {
       display: flex;
       align-items: center;
       gap: 14px;
-      padding: 20px 24px 0;
+      padding: 22px 24px 0;
     }
+
+    /* Usa --cfg-icon-bg para ter opacidade correta em ambos os temas */
     .cfg-card-icon {
-      width: 38px;
-      height: 38px;
-      border-radius: 10px;
-      background: var(--primary-light, rgba(99,102,241,0.1));
+      width: 40px;
+      height: 40px;
+      border-radius: 11px;
+      background: var(--cfg-icon-bg);
       color: var(--primary, #6366f1);
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
     }
+
     .cfg-card-head-text h3 {
       font-size: 0.9375rem;
       font-weight: 600;
       color: var(--text-primary);
       margin: 0 0 2px;
+      letter-spacing: -0.01em;
     }
+
     .cfg-card-head-text p {
       font-size: 0.8125rem;
       color: var(--text-secondary);
       margin: 0;
+      line-height: 1.45;
     }
 
-    /* Divisor interno */
+    /* ── Divisor interno ───────────────────────────────────────── */
+    /* Usa --cfg-border-solid para ser visível nos dois temas */
     .cfg-divider {
       height: 1px;
-      background: var(--border);
+      background: var(--cfg-border-solid);
       margin: 20px 24px 0;
     }
 
-    /* Corpo do card */
+    /* ── Corpo do card ─────────────────────────────────────────── */
     .cfg-card-body {
-      padding: 20px 24px 24px;
+      padding: 20px 24px 26px;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 18px;
     }
 
-    /* Preview do usuário */
+    /* ── Preview do usuário ────────────────────────────────────── */
+    /* Usa --cfg-subtle-bg e --cfg-border para fundo leve sobre o card */
     .cfg-user-row {
       display: flex;
       align-items: center;
       gap: 14px;
-      padding: 12px 14px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      background: var(--bg-subtle, rgba(99,102,241,0.04));
+      padding: 14px 16px;
+      border: 1px solid var(--cfg-border-solid);
+      border-radius: 12px;
+      background: var(--cfg-subtle-bg);
     }
+
     .cfg-avatar {
-      width: 42px;
-      height: 42px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
       background: var(--primary, #6366f1);
       color: #fff;
@@ -107,8 +170,11 @@
       justify-content: center;
       flex-shrink: 0;
       letter-spacing: -0.5px;
+      box-shadow: 0 2px 8px rgba(99, 102, 241, 0.35);
     }
+
     .cfg-user-info { min-width: 0; }
+
     .cfg-user-name {
       font-size: 0.9375rem;
       font-weight: 600;
@@ -116,89 +182,115 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      letter-spacing: -0.01em;
     }
+
     .cfg-user-email {
       font-size: 0.8125rem;
       color: var(--text-secondary);
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      margin-top: 1px;
+      margin-top: 2px;
     }
 
-    /* Campo de formulário */
-    .cfg-field { display: flex; flex-direction: column; gap: 6px; }
+    /* ── Campo de formulário ───────────────────────────────────── */
+    .cfg-field { display: flex; flex-direction: column; gap: 7px; }
+
     .cfg-field label {
       font-size: 0.8125rem;
       font-weight: 500;
       color: var(--text-primary);
     }
-    .cfg-field .form-control { width: 100%; box-sizing: border-box; }
+
+    .cfg-field .form-control {
+      width: 100%;
+      box-sizing: border-box;
+    }
+
     .cfg-field-hint {
       font-size: 0.75rem;
       color: var(--text-secondary);
       margin: 0;
+      line-height: 1.45;
     }
 
-    /* Linha de ação */
+    /* ── Linha de ação ─────────────────────────────────────────── */
     .cfg-action-row {
       display: flex;
       align-items: center;
       gap: 12px;
+      flex-wrap: wrap;
     }
+
+    /* ── Mensagens de status ───────────────────────────────────── */
     .cfg-status {
       font-size: 0.8125rem;
       font-weight: 500;
       opacity: 0;
-      transition: opacity 0.3s;
+      transition: opacity 0.25s ease;
+      pointer-events: none;
     }
     .cfg-status.visible { opacity: 1; }
     .cfg-status.success { color: var(--success, #22c55e); }
     .cfg-status.error   { color: var(--danger,  #ef4444); }
 
-    /* Seletor de tema — cards grandes */
+    /* ── Grid de seleção de tema ───────────────────────────────── */
     .cfg-theme-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
     }
+
     .cfg-theme-opt { position: relative; }
+
     .cfg-theme-opt input[type="radio"] {
       position: absolute; opacity: 0; width: 0; height: 0;
     }
+
+    /* Usa --cfg-subtle-bg em vez de var(--surface, #fff) */
     .cfg-theme-card {
       display: flex;
       flex-direction: column;
       gap: 10px;
       padding: 14px;
-      border: 1.5px solid var(--border);
-      border-radius: 12px;
+      border: 1.5px solid var(--cfg-border-solid);
+      border-radius: 13px;
       cursor: pointer;
-      transition: border-color 0.15s, box-shadow 0.15s;
-      background: var(--surface, #fff);
-    }
-    .cfg-theme-opt input:checked + .cfg-theme-card {
-      border-color: var(--primary, #6366f1);
-      box-shadow: 0 0 0 3px rgba(99,102,241,0.12);
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      background: var(--cfg-subtle-bg);
     }
 
-    /* Miniatura do tema */
+    .cfg-theme-card:hover {
+      border-color: rgba(99, 102, 241, 0.4);
+    }
+
+    .cfg-theme-opt input:checked + .cfg-theme-card {
+      border-color: var(--primary, #6366f1);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.14);
+    }
+
+    /* ── Miniatura do tema ─────────────────────────────────────── */
     .cfg-theme-thumb {
       width: 100%;
-      height: 56px;
-      border-radius: 7px;
+      height: 58px;
+      border-radius: 8px;
       overflow: hidden;
-      border: 1px solid var(--border);
+      border: 1px solid var(--cfg-border-solid);
       display: flex;
       flex-direction: column;
     }
+
     .cfg-theme-thumb-bar { height: 14px; background: var(--primary, #6366f1); }
+
     .cfg-theme-thumb-body {
       flex: 1;
       display: grid;
-      grid-template-columns: 60px 1fr;
+      grid-template-columns: 52px 1fr;
     }
+
     .cfg-theme-thumb-sidebar { border-right: 1px solid; }
+
     .cfg-theme-thumb-content {
       display: flex;
       flex-direction: column;
@@ -206,44 +298,50 @@
       gap: 4px;
       padding: 6px 8px;
     }
-    .cfg-theme-thumb-line {
-      border-radius: 3px;
-      height: 5px;
-    }
 
-    /* Cores por tema */
-    .thumb-light .cfg-theme-thumb-body { background: #f8f9fa; }
-    .thumb-light .cfg-theme-thumb-sidebar { background: #eef0f4; border-color: #e2e5ea; }
-    .thumb-light .cfg-theme-thumb-line { background: #d1d5db; }
-    .thumb-dark  .cfg-theme-thumb-body { background: #1a1b2e; }
-    .thumb-dark  .cfg-theme-thumb-sidebar { background: #141526; border-color: #2a2b40; }
-    .thumb-dark  .cfg-theme-thumb-line { background: #374151; }
+    .cfg-theme-thumb-line { border-radius: 3px; height: 5px; }
 
-    /* Rodapé do card de tema */
+    /* ── Cores FIXAS das miniaturas (não seguem o tema ativo) ──── */
+    /* Estas são representações visuais do tema, não o tema em si.  */
+    .thumb-light .cfg-theme-thumb-body    { background: #f3f4f6; }
+    .thumb-light .cfg-theme-thumb-sidebar { background: #e8ebf0; border-color: #d8dce4; }
+    .thumb-light .cfg-theme-thumb-line    { background: #c8cdd6; }
+
+    .thumb-dark  .cfg-theme-thumb-body    { background: #1a1b2e; }
+    .thumb-dark  .cfg-theme-thumb-sidebar { background: #12131e; border-color: #272840; }
+    .thumb-dark  .cfg-theme-thumb-line    { background: #3a3d56; }
+
+    /* ── Rodapé do card de tema ────────────────────────────────── */
     .cfg-theme-footer {
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
+
     .cfg-theme-label {
       font-size: 0.875rem;
       font-weight: 500;
       color: var(--text-primary);
     }
+
+    /* ── Bolinha de rádio customizada ──────────────────────────── */
     .cfg-theme-radio {
       width: 18px;
       height: 18px;
       border-radius: 50%;
-      border: 1.5px solid var(--border);
+      border: 1.5px solid var(--cfg-border-solid);
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: all 0.15s;
+      transition: background 0.15s ease, border-color 0.15s ease;
+      flex-shrink: 0;
     }
+
     .cfg-theme-opt input:checked + .cfg-theme-card .cfg-theme-radio {
       background: var(--primary, #6366f1);
       border-color: var(--primary, #6366f1);
     }
+
     .cfg-theme-opt input:checked + .cfg-theme-card .cfg-theme-radio::after {
       content: '';
       width: 6px;
@@ -253,12 +351,32 @@
       display: block;
     }
 
-    /* Responsivo */
+    /* ── Ajuste fino do input no tema escuro ───────────────────── */
+    /* Aplicado apenas se os estilos globais de form-control não
+       cobrirem o tema escuro. Inofensivo caso já estejam cobertos. */
+    [data-theme="dark"] .cfg-field .form-control {
+      background-color: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 255, 255, 0.11);
+      color: var(--text-primary);
+    }
+    [data-theme="dark"] .cfg-field .form-control::placeholder {
+      opacity: 0.45;
+    }
+    [data-theme="dark"] .cfg-field .form-control:focus {
+      background-color: rgba(255, 255, 255, 0.08);
+      border-color: var(--primary, #6366f1);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+      outline: none;
+    }
+
+    /* ── Responsivo ────────────────────────────────────────────── */
     @media (max-width: 600px) {
-      .config-page { padding: 20px 16px 40px; }
-      .cfg-card-head, .cfg-card-body { padding-left: 16px; padding-right: 16px; }
-      .cfg-divider { margin-left: 16px; margin-right: 16px; }
+      .config-page { padding: 20px 16px 44px; }
+      .cfg-card-head  { padding-left: 16px; padding-right: 16px; }
+      .cfg-card-body  { padding-left: 16px; padding-right: 16px; }
+      .cfg-divider    { margin-left: 16px; margin-right: 16px; }
       .cfg-theme-grid { grid-template-columns: 1fr; }
+      .cfg-action-row { flex-direction: column; align-items: flex-start; }
     }
   </style>
 </head>
@@ -287,7 +405,7 @@
         <h2 class="config-page-title">Configurações</h2>
         <p class="config-page-sub">Personalize sua conta e a aparência do sistema.</p>
 
-        <!-- ── Card: Perfil ──────────────────────────────── -->
+        <!-- ── Card: Perfil ──────────────────────────────────── -->
         <div class="cfg-card">
           <div class="cfg-card-head">
             <div class="cfg-card-icon">
@@ -325,7 +443,7 @@
           </div>
         </div>
 
-        <!-- ── Card: Aparência ───────────────────────────── -->
+        <!-- ── Card: Aparência ───────────────────────────────── -->
         <div class="cfg-card">
           <div class="cfg-card-head">
             <div class="cfg-card-icon">
