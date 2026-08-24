@@ -369,6 +369,19 @@
       outline: none;
     }
 
+    /* ── Botões de ícone no tema escuro ───────────────────────── */
+    /* O btn-icon do CSS global provavelmente tem background claro.
+       Este override garante transparência no tema escuro. */
+    [data-theme="dark"] .btn-icon {
+      background: transparent;
+      border-color: transparent;
+      color: var(--text-secondary, rgba(255, 255, 255, 0.65));
+    }
+    [data-theme="dark"] .btn-icon:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: transparent;
+    }
+
     /* ── Responsivo ────────────────────────────────────────────── */
     @media (max-width: 600px) {
       .config-page { padding: 20px 16px 44px; }
