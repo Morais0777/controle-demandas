@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configurações — Controle de Demandas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/home.css">
+  <style>
+    /* ── Estilos exclusivos da página de Configurações ── */
+    .config-page {
+      padding: 32px 24px;
+      max-width: 680px;
+    }
+    .config-page-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    .config-page-sub {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      margin-bottom: 32px;
+    }
+
+    /* Cards de seção */
+    .config-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+      transition: box-shadow 0.2s;
+    }
+    .config-card:hover {
+      box-shadow: 0 2px 12px var(--shadow);
+    }
+    .config-card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .config-card-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: var(--primary-light, rgba(99,102,241,0.12));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+    .config-card-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 0;
+    }
+    .config-card-desc {
+      font-size: 0.8125rem;
+      color: var(--text-secondary);
+      margin: 2px 0 0;
+    }
+
+    /* Campo do formulário */
+    .config-field {
+      margin-bottom: 16px;
+    }
+    .config-field label {
+      display: block;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+    .config-field .form-control {
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .config-field .field-hint {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    /* Preview do avatar */
+    .avatar-preview-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+      padding: 16px;
+      background: var(--bg);
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+    .avatar-preview {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.125rem;
+      font-weight: 700;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+    .avatar-preview-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .avatar-preview-name {
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .avatar-preview-email {
+      font-size: 0.8125rem;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Seletor de tema */
+    .theme-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .theme-option {
+      position: relative;
+      cursor: pointer;
+    }
+    .theme-option input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .theme-option-label {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      background: var(--bg);
+      transition: all 0.18s;
+      cursor: pointer;
+    }
+    .theme-option input[type="radio"]:checked + .theme-option-label {
+      border-color: var(--primary);
+      background: var(--primary-light, rgba(99,102,241,0.08));
+    }
+    .theme-option-icon {
+      font-size: 1.25rem;
+      line-height: 1;
+    }
+    .theme-option-text {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .theme-check {
+      margin-left: auto;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.18s;
+    }
+    .theme-option input[type="radio"]:checked ~ * .theme-check,
+    .theme-option input[type="radio"]:checked + .theme-option-label .theme-check {
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+    .theme-option input[type="radio"]:checked + .theme-option-label .theme-check::after {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #fff;
+      display: block;
+    }
+
+    /* Rodapé do card com botão */
+    .config-card-footer {
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .config-status-msg {
+      font-size: 0.8125rem;
+      font-weight: 500;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .config-status-msg.visible {
+      opacity: 1;
+    }
+    .config-status-msg.success { color: var(--success, #22c55e); }
+    .config-status-msg.error   { color: var(--danger,  #ef4444); }
+
+    /* Responsivo */
+    @media (max-width: 600px) {
+      .config-page { padding: 20px 16px; }
+      .theme-options { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-layout" id="appLayout">
+    <!-- Sidebar injetada pelo renderLayout() -->
+    <div class="main-content">
+      <!-- Topbar -->
+      <header class="topbar">
+        <button class="btn-icon topbar-menu-btn" onclick="toggleMobileMenu()" aria-label="Menu">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <h1 class="topbar-title" id="topbarTitle">Configurações</h1>
+        <div class="topbar-actions">
+          <button class="btn-icon" onclick="toggleTheme()" title="Alternar tema" id="btnThemeToggle">
+            <svg id="iconTheme" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- Conteúdo principal -->
+      <main class="page-content config-page">
+        <h2 class="config-page-title">Configurações</h2>
+        <p class="config-page-sub">Personalize sua conta e a aparência do sistema.</p>
+
+        <!-- ── Card: Perfil ─────────────────────────────── -->
+        <div class="config-card">
+          <div class="config-card-header">
+            <div class="config-card-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <div>
+              <p class="config-card-title">Perfil</p>
+              <p class="config-card-desc">Altere como seu nome é exibido no sistema.</p>
+            </div>
+          </div>
+
+          <!-- Preview do avatar com nome atual -->
+          <div class="avatar-preview-row">
+            <div class="avatar-preview" id="avatarPreview">?</div>
+            <div class="avatar-preview-info">
+              <div class="avatar-preview-name" id="previewName">Carregando…</div>
+              <div class="avatar-preview-email" id="previewEmail">—</div>
+            </div>
+          </div>
+
+          <div class="config-field">
+            <label for="inputNome">Nome de usuário</label>
+            <input
+              type="text"
+              id="inputNome"
+              class="form-control"
+              placeholder="Ex: Maycon Morais"
+              maxlength="60"
+              autocomplete="name"
+            >
+            <p class="field-hint">Este nome será exibido na sidebar e no avatar.</p>
+          </div>
+
+          <div class="config-card-footer">
+            <button class="btn btn-primary" id="btnSalvarPerfil" onclick="salvarPerfil()">
+              Salvar alterações
+            </button>
+            <span class="config-status-msg" id="statusPerfil"></span>
+          </div>
+        </div>
+
+        <!-- ── Card: Tema ────────────────────────────────── -->
+        <div class="config-card">
+          <div class="config-card-header">
+            <div class="config-card-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            </div>
+            <div>
+              <p class="config-card-title">Aparência</p>
+              <p class="config-card-desc">Escolha entre o tema claro e escuro.</p>
+            </div>
+          </div>
+
+          <div class="theme-options">
+            <label class="theme-option">
+              <input type="radio" name="tema" value="light" id="temaLight" onchange="aplicarTemaSelecionado('light')">
+              <span class="theme-option-label">
+                <span class="theme-option-icon">☀️</span>
+                <span class="theme-option-text">Tema claro</span>
+                <span class="theme-check"></span>
+              </span>
+            </label>
+            <label class="theme-option">
+              <input type="radio" name="tema" value="dark" id="temaDark" onchange="aplicarTemaSelecionado('dark')">
+              <span class="theme-option-label">
+                <span class="theme-option-icon">🌙</span>
+                <span class="theme-option-text">Tema escuro</span>
+                <span class="theme-check"></span>
+              </span>
+            </label>
+          </div>
+
+          <div class="config-card-footer">
+            <span class="config-status-msg success visible" id="statusTema" style="opacity:0">
+              Tema aplicado com sucesso!
+            </span>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="../js/config.js"></script>
+  <script src="../js/app.js"></script>
+  <script>
+    // ── Inicializa a página ───────────────────────────────
+    (async () => {
+      renderLayout('configuracoes');
+      const user = await initPage('Configurações');
+      if (!user) return;
+
+      // Preenche o campo com o nome atual e o preview
+      const email = user.email || '';
+      document.getElementById('previewEmail').textContent = email;
+      document.getElementById('inputNome').value = window._currentDisplayName || '';
+      atualizarPreview(window._currentDisplayName || '');
+
+      // Sincroniza o seletor de tema com o tema ativo
+      const temaAtual = localStorage.getItem('cd-theme') || 'light';
+      document.getElementById(temaAtual === 'dark' ? 'temaDark' : 'temaLight').checked = true;
+
+      // Atualiza o preview em tempo real conforme o usuário digita
+      document.getElementById('inputNome').addEventListener('input', (e) => {
+        atualizarPreview(e.target.value);
+      });
+    })();
+
+    // ── Preview do avatar ─────────────────────────────────
+    function atualizarPreview(nome) {
+      const partes = (nome || '').trim().split(/\s+/).filter(Boolean);
+      const iniciais = partes.slice(0, 2).map(p => p[0]?.toUpperCase() || '').join('') || '?';
+      document.getElementById('avatarPreview').textContent = iniciais;
+      document.getElementById('previewName').textContent = nome.trim() || '(sem nome)';
+    }
+
+    // ── Salvar perfil ─────────────────────────────────────
+    async function salvarPerfil() {
+      const nome = document.getElementById('inputNome').value.trim();
+      const btn  = document.getElementById('btnSalvarPerfil');
+      const msg  = document.getElementById('statusPerfil');
+
+      if (!nome) {
+        exibirStatus(msg, 'error', 'O nome não pode ficar em branco.');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Salvando…';
+
+      try {
+        const { data: { session } } = await _supabaseClient.auth.getSession();
+        if (!session) throw new Error('Sessão expirada. Faça login novamente.');
+
+        // Atualiza na tabela profiles
+        const { error } = await _supabaseClient
+          .from('profiles')
+          .upsert({ id: session.user.id, display_name: nome, email: session.user.email }, { onConflict: 'id' });
+        if (error) throw error;
+
+        // Atualiza também no user_metadata como fallback
+        await _supabaseClient.auth.updateUser({ data: { display_name: nome } });
+
+        // Atualiza a sidebar imediatamente
+        const el = document.getElementById('userName');
+        if (el) el.textContent = nome;
+        const partes = nome.split(/\s+/).slice(0, 2).map(p => p[0]?.toUpperCase() || '').join('');
+        const av = document.getElementById('userAvatar');
+        if (av) av.textContent = partes || '?';
+
+        window._currentDisplayName = nome;
+        exibirStatus(msg, 'success', '✓ Nome atualizado com sucesso!');
+        showToast('Nome de usuário atualizado!', 'success');
+      } catch (err) {
+        exibirStatus(msg, 'error', err.message);
+        showToast('Erro ao salvar: ' + err.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Salvar alterações';
+      }
+    }
+
+    // ── Aplicar tema pelo seletor ─────────────────────────
+    function aplicarTemaSelecionado(tema) {
+      document.documentElement.setAttribute('data-theme', tema);
+      localStorage.setItem('cd-theme', tema);
+      updateThemeIcon(tema);
+
+      const msg = document.getElementById('statusTema');
+      msg.textContent = tema === 'dark' ? '🌙 Tema escuro aplicado!' : '☀️ Tema claro aplicado!';
+      exibirStatus(msg, 'success', msg.textContent);
+    }
+
+    // ── Helper: exibir mensagem de status ─────────────────
+    function exibirStatus(el, tipo, texto) {
+      el.className = `config-status-msg ${tipo} visible`;
+      el.textContent = texto;
+      clearTimeout(el._timer);
+      el._timer = setTimeout(() => el.classList.remove('visible'), 3500);
+    }
+  </script>
+</body>
+</html>

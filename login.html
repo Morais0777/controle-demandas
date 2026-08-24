@@ -30,7 +30,7 @@
       </div>
       <div class="login-logo-text">
         <span class="login-logo-title">Demandas</span>
-        <span class="login-logo-sub">Controle & Gestão</span>
+        <span class="login-logo-sub">Controle &amp; Gestão</span>
       </div>
     </div>
 
@@ -71,6 +71,11 @@
       <div id="cadastroMsg"></div>
 
       <form class="login-form" id="formCadastro" novalidate>
+        <!-- NOVO: campo nome de usuário -->
+        <div class="form-group">
+          <label for="cadastroNome">Nome de usuário</label>
+          <input type="text" id="cadastroNome" class="form-control" placeholder="Ex: Maycon" required autocomplete="name">
+        </div>
         <div class="form-group">
           <label for="cadastroEmail">E-mail</label>
           <input type="email" id="cadastroEmail" class="form-control" placeholder="seu@email.com" required autocomplete="email">
@@ -119,7 +124,13 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <script src="js/config.js"></script>
   <script>
-    // Supabase carregado via UMD no <head>
+    // ── Supabase — sem sessão persistente ─────────────────
+    // persistSession: false garante que fechar o navegador exige novo login
+    const _sb = window.supabase.createClient(
+      SUPABASE_CONFIG.url,
+      SUPABASE_CONFIG.anonKey,
+      { auth: { autoRefreshToken: false, persistSession: false } }
+    );
 
     // ── Tema ──────────────────────────────────────────────
     const html = document.documentElement;
@@ -133,10 +144,10 @@
       localStorage.setItem('cd-theme', next);
     });
 
-    // ── Supabase ──────────────────────────────────────────
-    const _sb = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
-
-    // Redireciona se já logado
+    // ── NÃO redireciona automaticamente se há sessão ──────
+    // Com persistSession: false, getSession() sempre retorna null após fechar
+    // o navegador. Mantemos a checagem apenas para o caso de navegação
+    // normal dentro da mesma aba (ex: clicar em "Voltar").
     (async () => {
       const { data: { session } } = await _sb.auth.getSession();
       if (session) window.location.replace('pages/dashboard.html');
@@ -169,18 +180,18 @@
     // ── Tabs ──────────────────────────────────────────────
     window.switchTab = (tab) => {
       const isLogin = tab === 'login';
-      document.getElementById('panelLogin').style.display   = isLogin ? 'block' : 'none';
-      document.getElementById('panelCadastro').style.display = isLogin ? 'none' : 'block';
-      document.getElementById('panelForgot').style.display  = 'none';
+      document.getElementById('panelLogin').style.display    = isLogin ? 'block' : 'none';
+      document.getElementById('panelCadastro').style.display = isLogin ? 'none'  : 'block';
+      document.getElementById('panelForgot').style.display   = 'none';
       document.getElementById('tabLogin').classList.toggle('active', isLogin);
       document.getElementById('tabCadastro').classList.toggle('active', !isLogin);
       clearMsg('loginMsg'); clearMsg('cadastroMsg');
     };
 
     window.showForgot = () => {
-      document.getElementById('panelLogin').style.display   = 'none';
+      document.getElementById('panelLogin').style.display    = 'none';
       document.getElementById('panelCadastro').style.display = 'none';
-      document.getElementById('panelForgot').style.display  = 'block';
+      document.getElementById('panelForgot').style.display   = 'block';
     };
 
     window.showLogin = () => switchTab('login');
@@ -210,14 +221,20 @@
       }
     });
 
-    // ── Cadastro ──────────────────────────────────────────
+    // ── Cadastro (agora com nome de usuário) ──────────────
     document.getElementById('formCadastro').addEventListener('submit', async (e) => {
       e.preventDefault();
       clearMsg('cadastroMsg');
+
+      const nome     = document.getElementById('cadastroNome').value.trim();
       const email    = document.getElementById('cadastroEmail').value.trim();
       const senha    = document.getElementById('cadastroSenha').value;
       const confirma = document.getElementById('cadastroConfirma').value;
 
+      if (!nome) {
+        showMsg('cadastroMsg', 'error', 'Informe um nome de usuário.');
+        return;
+      }
       if (!email || !senha) {
         showMsg('cadastroMsg', 'error', 'Preencha todos os campos.');
         return;
@@ -233,8 +250,28 @@
 
       setLoading('btnCadastro', true, 'Criar conta');
       try {
-        const { error } = await _sb.auth.signUp({ email, password: senha });
+        // 1. Cria o usuário no Supabase Auth
+        const { data, error } = await _sb.auth.signUp({
+          email,
+          password: senha,
+          options: {
+            // user_metadata é salvo direto no auth.users — sem tabela extra necessária
+            data: { display_name: nome }
+          }
+        });
         if (error) throw error;
+
+        // 2. Insere o perfil na tabela profiles (criada via SQL abaixo)
+        //    O trigger handle_new_user faz isso automaticamente no Supabase,
+        //    mas inserimos também aqui como fallback caso o trigger não exista.
+        if (data?.user) {
+          await _sb.from('profiles').upsert({
+            id: data.user.id,
+            display_name: nome,
+            email: email
+          }, { onConflict: 'id' });
+        }
+
         showMsg('cadastroMsg', 'success', 'Conta criada! Verifique seu e-mail para confirmar.');
         setLoading('btnCadastro', false, 'Criar conta');
       } catch (err) {
@@ -266,7 +303,4 @@
   </script>
 </body>
 </html>
-
-
-
 

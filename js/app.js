@@ -3,13 +3,13 @@
 // Funciona sem módulos ES6 — compatível com GitHub Pages
 // ============================================================
 
-// ── Cliente Supabase (criado a partir do config.js) ──────────
-// Renomeado para _supabaseClient para evitar conflito com a
-// variável global 'supabase' exposta pelo CDN UMD
+// ── Cliente Supabase ─────────────────────────────────────────
+// persistSession: false  → sem login automático ao reabrir o navegador
+// autoRefreshToken: false → consistente com a ausência de sessão persistente
 const _supabaseClient = window.supabase.createClient(
   SUPABASE_CONFIG.url,
   SUPABASE_CONFIG.anonKey,
-  { auth: { autoRefreshToken: true, persistSession: true } }
+  { auth: { autoRefreshToken: false, persistSession: false } }
 );
 window._sb = _supabaseClient;
 
@@ -17,17 +17,19 @@ window._sb = _supabaseClient;
 async function initPage(pageTitle) {
   applyTheme();
 
-   const { data: { session } } = await _supabaseClient.auth.getSession();  if (!session) {
+  const { data: { session } } = await _supabaseClient.auth.getSession();
+  if (!session) {
     window.location.replace('../login.html');
     return null;
   }
 
-  populateUser(session.user);
+  // Carrega o perfil (display_name) do banco e popula a sidebar
+  await populateUser(session.user);
   highlightNav();
 
   document.getElementById('sidebarOverlay')?.addEventListener('click', closeMobileMenu);
   document.getElementById('btnLogout')?.addEventListener('click', async () => {
-    await supabase.auth.signOut();
+    await _supabaseClient.auth.signOut();
     window.location.replace('../login.html');
   });
 
@@ -63,15 +65,48 @@ function updateThemeIcon(theme) {
 }
 
 // ── Usuário na Sidebar ────────────────────────────────────────
-function populateUser(user) {
+// Busca o display_name na tabela profiles.
+// Fallback: user_metadata.display_name → parte do e-mail (apenas se não houver nome).
+async function populateUser(user) {
   const email = user?.email || '';
-  const initials = email.slice(0, 2).toUpperCase();
+  let displayName = '';
+
+  // 1. Tenta carregar da tabela profiles
+  try {
+    const { data: profile } = await _supabaseClient
+      .from('profiles')
+      .select('display_name')
+      .eq('id', user.id)
+      .single();
+    if (profile?.display_name) displayName = profile.display_name;
+  } catch (_) { /* ignora */ }
+
+  // 2. Fallback: user_metadata (salvo no signUp)
+  if (!displayName && user?.user_metadata?.display_name) {
+    displayName = user.user_metadata.display_name;
+  }
+
+  // 3. Último fallback: parte antes do @ (só para usuários antigos sem nome)
+  if (!displayName) displayName = email.split('@')[0];
+
+  // Gera as iniciais a partir do nome (ex: "Maycon Morais" → "MM")
+  const initials = displayName
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map(w => w[0]?.toUpperCase() || '')
+    .join('');
+
   const elAvatar = document.getElementById('userAvatar');
   const elName   = document.getElementById('userName');
   const elEmail  = document.getElementById('userEmail');
-  if (elAvatar) elAvatar.textContent = initials;
-  if (elName)   elName.textContent   = email.split('@')[0];
+  if (elAvatar) elAvatar.textContent = initials || '?';
+  if (elName)   elName.textContent   = displayName;
   if (elEmail)  elEmail.textContent  = email;
+
+  // Guarda em window para uso na página de configurações
+  window._currentDisplayName = displayName;
+  window._currentUser = user;
 }
 
 // ── Nav ativo ─────────────────────────────────────────────────
@@ -182,15 +217,22 @@ function esc(str) {
   return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
+// ── renderLayout — inclui item Configurações na nav ───────────
 function renderLayout(activeSection) {
   const navItems = [
-    { href: 'dashboard.html',    label: 'Dashboard',    section: 'dashboard',    icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>' },
-    { href: 'demandas.html',     label: 'Demandas',     section: 'demandas',     icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg>' },
-    { href: 'solicitacoes.html', label: 'Solicitações', section: 'solicitacoes', icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>' },
-    { href: 'lembretes.html',    label: 'Lembretes',    section: 'lembretes',    icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>' },
-    { href: 'relatorios.html',   label: 'Relatórios',   section: 'relatorios',   icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>' },
+    { href: 'dashboard.html',      label: 'Dashboard',      section: 'dashboard',      icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>' },
+    { href: 'demandas.html',       label: 'Demandas',       section: 'demandas',       icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg>' },
+    { href: 'solicitacoes.html',   label: 'Solicitações',   section: 'solicitacoes',   icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>' },
+    { href: 'lembretes.html',      label: 'Lembretes',      section: 'lembretes',      icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>' },
+    { href: 'relatorios.html',     label: 'Relatórios',     section: 'relatorios',     icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>' },
+    { href: 'configuracoes.html',  label: 'Configurações',  section: 'configuracoes',  icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>' },
   ];
-  const navHTML = navItems.map(item => `
+
+  // Separa os itens principais dos de configurações para criar seção separada
+  const mainItems   = navItems.slice(0, 5);
+  const configItems = navItems.slice(5);
+
+  const buildNav = (items) => items.map(item => `
     <a href="${item.href}" class="sidebar-nav-item ${activeSection === item.section ? 'active' : ''}">
       <span class="nav-icon">${item.icon}</span><span>${item.label}</span>
     </a>`).join('');
@@ -208,7 +250,9 @@ function renderLayout(activeSection) {
       </div>
       <nav class="sidebar-nav">
         <div class="sidebar-section-label">Principal</div>
-        ${navHTML}
+        ${buildNav(mainItems)}
+        <div class="sidebar-section-label" style="margin-top:8px">Sistema</div>
+        ${buildNav(configItems)}
       </nav>
       <div class="sidebar-footer">
         <div class="sidebar-user-card">
@@ -224,25 +268,20 @@ function renderLayout(activeSection) {
       </div>
     </aside>`;
 
-  // Overlay separado, posicionado como fixed fora do fluxo
   if (!document.getElementById('sidebarOverlay')) {
     document.body.insertAdjacentHTML('beforeend', '<div class="sidebar-overlay" id="sidebarOverlay"></div>');
   }
 
   const layout = document.getElementById('appLayout');
   if (layout) {
-    // Insere a sidebar como primeiro filho do appLayout para evitar gaps
     layout.insertAdjacentHTML('afterbegin', sidebarHTML);
-    // Garante que o app-layout seja um flex sem gaps
-    layout.style.display = 'flex';
+    layout.style.display   = 'flex';
     layout.style.minHeight = '100vh';
-    layout.style.gap = '0';
-    layout.style.margin = '0';
-    layout.style.padding = '0';
+    layout.style.gap       = '0';
+    layout.style.margin    = '0';
+    layout.style.padding   = '0';
   }
   if (!document.getElementById('toastContainer')) {
     document.body.insertAdjacentHTML('beforeend', '<div class="toast-container" id="toastContainer"></div>');
   }
 }
-
-
