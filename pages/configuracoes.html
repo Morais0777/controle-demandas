@@ -11,74 +11,133 @@
   <link rel="stylesheet" href="../css/components.css">
   <link rel="stylesheet" href="../css/home.css">
   <style>
-    /* ── Estilos exclusivos da página de Configurações ── */
+    /* ── Configurações: layout geral ── */
     .config-page {
-      padding: 32px 24px;
-      max-width: 680px;
-    }
-    .config-page-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--text-primary);
-      margin-bottom: 4px;
-    }
-    .config-page-sub {
-      font-size: 0.875rem;
-      color: var(--text-secondary);
-      margin-bottom: 32px;
+      padding: 32px 28px;
+      max-width: 720px;
     }
 
-    /* Cards de seção */
-    .config-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 24px;
-      margin-bottom: 20px;
-      transition: box-shadow 0.2s;
-    }
-    .config-card:hover {
-      box-shadow: 0 2px 12px var(--shadow);
-    }
-    .config-card-header {
+    /* Cabeçalho da página */
+    .config-page-header {
       display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 20px;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 36px;
+      padding-bottom: 28px;
+      border-bottom: 1px solid var(--border);
     }
-    .config-card-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      background: var(--primary-light, rgba(99,102,241,0.12));
+    .config-page-header-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: var(--primary-light, rgba(99,102,241,0.1));
       display: flex;
       align-items: center;
       justify-content: center;
       color: var(--primary);
       flex-shrink: 0;
     }
-    .config-card-title {
-      font-size: 1rem;
-      font-weight: 600;
+    .config-page-title {
+      font-size: 1.375rem;
+      font-weight: 700;
       color: var(--text-primary);
+      margin: 0 0 4px;
+      line-height: 1.2;
+    }
+    .config-page-sub {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
       margin: 0;
     }
-    .config-card-desc {
+
+    /* Seções com label lateral */
+    .config-section {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 32px;
+      padding: 28px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .config-section:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    .config-section-label {
+      padding-top: 2px;
+    }
+    .config-section-label h3 {
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 0 0 4px;
+    }
+    .config-section-label p {
       font-size: 0.8125rem;
       color: var(--text-secondary);
-      margin: 2px 0 0;
+      margin: 0;
+      line-height: 1.5;
+    }
+    .config-section-body {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
     }
 
-    /* Campo do formulário */
+    /* Preview do usuário */
+    .user-preview {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      background: var(--bg, rgba(0,0,0,0.03));
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+    .user-preview-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--primary, #6366f1);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      font-weight: 700;
+      flex-shrink: 0;
+      letter-spacing: -0.5px;
+      transition: background 0.2s;
+    }
+    .user-preview-info {
+      min-width: 0;
+    }
+    .user-preview-name {
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .user-preview-email {
+      font-size: 0.8125rem;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 1px;
+    }
+
+    /* Campos de formulário */
     .config-field {
-      margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
     }
     .config-field label {
-      display: block;
       font-size: 0.8125rem;
       font-weight: 500;
       color: var(--text-primary);
-      margin-bottom: 6px;
     }
     .config-field .form-control {
       width: 100%;
@@ -87,59 +146,31 @@
     .config-field .field-hint {
       font-size: 0.75rem;
       color: var(--text-secondary);
-      margin-top: 4px;
+      margin: 0;
     }
 
-    /* Preview do avatar */
-    .avatar-preview-row {
+    /* Rodapé da ação */
+    .config-action-row {
       display: flex;
       align-items: center;
-      gap: 16px;
-      margin-bottom: 20px;
-      padding: 16px;
-      background: var(--bg);
-      border-radius: 10px;
-      border: 1px solid var(--border);
+      gap: 12px;
+      padding-top: 4px;
     }
-    .avatar-preview {
-      width: 52px;
-      height: 52px;
-      border-radius: 50%;
-      background: var(--primary);
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.125rem;
-      font-weight: 700;
-      flex-shrink: 0;
-      transition: all 0.2s;
-    }
-    .avatar-preview-info {
-      flex: 1;
-      min-width: 0;
-    }
-    .avatar-preview-name {
-      font-size: 0.9375rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .avatar-preview-email {
+    .config-status-msg {
       font-size: 0.8125rem;
-      color: var(--text-secondary);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      font-weight: 500;
+      opacity: 0;
+      transition: opacity 0.3s;
     }
+    .config-status-msg.visible { opacity: 1; }
+    .config-status-msg.success { color: var(--success, #22c55e); }
+    .config-status-msg.error   { color: var(--danger,  #ef4444); }
 
     /* Seletor de tema */
-    .theme-options {
+    .theme-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
+      gap: 10px;
     }
     .theme-option {
       position: relative;
@@ -156,42 +187,66 @@
       align-items: center;
       gap: 12px;
       padding: 14px 16px;
-      border: 2px solid var(--border);
+      border: 1.5px solid var(--border);
       border-radius: 10px;
-      background: var(--bg);
-      transition: all 0.18s;
+      background: var(--bg, rgba(0,0,0,0.02));
       cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
     }
     .theme-option input[type="radio"]:checked + .theme-option-label {
-      border-color: var(--primary);
-      background: var(--primary-light, rgba(99,102,241,0.08));
+      border-color: var(--primary, #6366f1);
+      background: var(--primary-light, rgba(99,102,241,0.07));
     }
-    .theme-option-icon {
-      font-size: 1.25rem;
-      line-height: 1;
+    .theme-preview {
+      width: 36px;
+      height: 26px;
+      border-radius: 5px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
     }
+    .theme-preview-bar {
+      height: 8px;
+      background: var(--primary, #6366f1);
+    }
+    .theme-preview-body {
+      flex: 1;
+      display: flex;
+      gap: 3px;
+      padding: 3px 4px;
+    }
+    .theme-preview-line {
+      border-radius: 2px;
+      height: 100%;
+    }
+    .theme-light .theme-preview-body { background: #f5f5f5; }
+    .theme-light .theme-preview-line { background: #d1d5db; }
+    .theme-dark  .theme-preview-body { background: #1e1e2e; }
+    .theme-dark  .theme-preview-line { background: #374151; }
     .theme-option-text {
       font-size: 0.875rem;
       font-weight: 500;
       color: var(--text-primary);
+      flex: 1;
     }
-    .theme-check {
-      margin-left: auto;
+    .theme-option-check {
       width: 18px;
       height: 18px;
       border-radius: 50%;
-      border: 2px solid var(--border);
+      border: 1.5px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: all 0.18s;
+      transition: all 0.15s;
+      flex-shrink: 0;
     }
-    .theme-option input[type="radio"]:checked ~ * .theme-check,
-    .theme-option input[type="radio"]:checked + .theme-option-label .theme-check {
-      background: var(--primary);
-      border-color: var(--primary);
+    .theme-option input[type="radio"]:checked + .theme-option-label .theme-option-check {
+      background: var(--primary, #6366f1);
+      border-color: var(--primary, #6366f1);
     }
-    .theme-option input[type="radio"]:checked + .theme-option-label .theme-check::after {
+    .theme-option input[type="radio"]:checked + .theme-option-label .theme-option-check::after {
       content: '';
       width: 6px;
       height: 6px;
@@ -200,29 +255,12 @@
       display: block;
     }
 
-    /* Rodapé do card com botão */
-    .config-card-footer {
-      margin-top: 20px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .config-status-msg {
-      font-size: 0.8125rem;
-      font-weight: 500;
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-    .config-status-msg.visible {
-      opacity: 1;
-    }
-    .config-status-msg.success { color: var(--success, #22c55e); }
-    .config-status-msg.error   { color: var(--danger,  #ef4444); }
-
     /* Responsivo */
-    @media (max-width: 600px) {
+    @media (max-width: 640px) {
       .config-page { padding: 20px 16px; }
-      .theme-options { grid-template-columns: 1fr; }
+      .config-section { grid-template-columns: 1fr; gap: 16px; }
+      .theme-grid { grid-template-columns: 1fr; }
+      .config-page-header { flex-direction: column; gap: 12px; }
     }
   </style>
 </head>
@@ -247,86 +285,96 @@
 
       <!-- Conteúdo principal -->
       <main class="page-content config-page">
-        <h2 class="config-page-title">Configurações</h2>
-        <p class="config-page-sub">Personalize sua conta e a aparência do sistema.</p>
 
-        <!-- ── Card: Perfil ─────────────────────────────── -->
-        <div class="config-card">
-          <div class="config-card-header">
-            <div class="config-card-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            </div>
-            <div>
-              <p class="config-card-title">Perfil</p>
-              <p class="config-card-desc">Altere como seu nome é exibido no sistema.</p>
-            </div>
+        <!-- Cabeçalho da página -->
+        <div class="config-page-header">
+          <div class="config-page-header-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
           </div>
-
-          <!-- Preview do avatar com nome atual -->
-          <div class="avatar-preview-row">
-            <div class="avatar-preview" id="avatarPreview">?</div>
-            <div class="avatar-preview-info">
-              <div class="avatar-preview-name" id="previewName">Carregando…</div>
-              <div class="avatar-preview-email" id="previewEmail">—</div>
-            </div>
-          </div>
-
-          <div class="config-field">
-            <label for="inputNome">Nome de usuário</label>
-            <input
-              type="text"
-              id="inputNome"
-              class="form-control"
-              placeholder="Ex: Maycon Morais"
-              maxlength="60"
-              autocomplete="name"
-            >
-            <p class="field-hint">Este nome será exibido na sidebar e no avatar.</p>
-          </div>
-
-          <div class="config-card-footer">
-            <button class="btn btn-primary" id="btnSalvarPerfil" onclick="salvarPerfil()">
-              Salvar alterações
-            </button>
-            <span class="config-status-msg" id="statusPerfil"></span>
+          <div>
+            <h2 class="config-page-title">Configurações</h2>
+            <p class="config-page-sub">Personalize sua conta e a aparência do sistema.</p>
           </div>
         </div>
 
-        <!-- ── Card: Tema ────────────────────────────────── -->
-        <div class="config-card">
-          <div class="config-card-header">
-            <div class="config-card-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <!-- ── Seção: Perfil ─────────────────────────────── -->
+        <div class="config-section">
+          <div class="config-section-label">
+            <h3>Perfil</h3>
+            <p>Seu nome é exibido na sidebar e no avatar do sistema.</p>
+          </div>
+          <div class="config-section-body">
+            <!-- Preview -->
+            <div class="user-preview">
+              <div class="user-preview-avatar" id="avatarPreview">?</div>
+              <div class="user-preview-info">
+                <div class="user-preview-name" id="previewName">Carregando…</div>
+                <div class="user-preview-email" id="previewEmail">—</div>
+              </div>
             </div>
-            <div>
-              <p class="config-card-title">Aparência</p>
-              <p class="config-card-desc">Escolha entre o tema claro e escuro.</p>
+            <!-- Campo nome -->
+            <div class="config-field">
+              <label for="inputNome">Nome de usuário</label>
+              <input
+                type="text"
+                id="inputNome"
+                class="form-control"
+                placeholder="Ex: Maycon Morais"
+                maxlength="60"
+                autocomplete="name"
+              >
+              <p class="field-hint">Aparece na sidebar e nas iniciais do avatar.</p>
+            </div>
+            <!-- Ação -->
+            <div class="config-action-row">
+              <button class="btn btn-primary" id="btnSalvarPerfil" onclick="salvarPerfil()">
+                Salvar alterações
+              </button>
+              <span class="config-status-msg" id="statusPerfil"></span>
             </div>
           </div>
+        </div>
 
-          <div class="theme-options">
-            <label class="theme-option">
-              <input type="radio" name="tema" value="light" id="temaLight" onchange="aplicarTemaSelecionado('light')">
-              <span class="theme-option-label">
-                <span class="theme-option-icon">☀️</span>
-                <span class="theme-option-text">Tema claro</span>
-                <span class="theme-check"></span>
-              </span>
-            </label>
-            <label class="theme-option">
-              <input type="radio" name="tema" value="dark" id="temaDark" onchange="aplicarTemaSelecionado('dark')">
-              <span class="theme-option-label">
-                <span class="theme-option-icon">🌙</span>
-                <span class="theme-option-text">Tema escuro</span>
-                <span class="theme-check"></span>
-              </span>
-            </label>
+        <!-- ── Seção: Aparência ──────────────────────────── -->
+        <div class="config-section">
+          <div class="config-section-label">
+            <h3>Aparência</h3>
+            <p>Escolha o tema visual do sistema. A preferência é salva automaticamente.</p>
           </div>
-
-          <div class="config-card-footer">
-            <span class="config-status-msg success visible" id="statusTema" style="opacity:0">
-              Tema aplicado com sucesso!
-            </span>
+          <div class="config-section-body">
+            <div class="theme-grid">
+              <!-- Tema Claro -->
+              <label class="theme-option">
+                <input type="radio" name="tema" value="light" id="temaLight" onchange="aplicarTemaSelecionado('light')">
+                <span class="theme-option-label">
+                  <span class="theme-preview theme-light">
+                    <span class="theme-preview-bar"></span>
+                    <span class="theme-preview-body">
+                      <span class="theme-preview-line" style="flex:2"></span>
+                      <span class="theme-preview-line" style="flex:1"></span>
+                    </span>
+                  </span>
+                  <span class="theme-option-text">Claro</span>
+                  <span class="theme-option-check"></span>
+                </span>
+              </label>
+              <!-- Tema Escuro -->
+              <label class="theme-option">
+                <input type="radio" name="tema" value="dark" id="temaDark" onchange="aplicarTemaSelecionado('dark')">
+                <span class="theme-option-label">
+                  <span class="theme-preview theme-dark">
+                    <span class="theme-preview-bar"></span>
+                    <span class="theme-preview-body">
+                      <span class="theme-preview-line" style="flex:2"></span>
+                      <span class="theme-preview-line" style="flex:1"></span>
+                    </span>
+                  </span>
+                  <span class="theme-option-text">Escuro</span>
+                  <span class="theme-option-check"></span>
+                </span>
+              </label>
+            </div>
+            <span class="config-status-msg" id="statusTema" style="opacity:0"></span>
           </div>
         </div>
 
@@ -337,101 +385,6 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <script src="../js/config.js"></script>
   <script src="../js/app.js"></script>
-  <script>
-    // ── Inicializa a página ───────────────────────────────
-    (async () => {
-      renderLayout('configuracoes');
-      const user = await initPage('Configurações');
-      if (!user) return;
-
-      // Preenche o campo com o nome atual e o preview
-      const email = user.email || '';
-      document.getElementById('previewEmail').textContent = email;
-      document.getElementById('inputNome').value = window._currentDisplayName || '';
-      atualizarPreview(window._currentDisplayName || '');
-
-      // Sincroniza o seletor de tema com o tema ativo
-      const temaAtual = localStorage.getItem('cd-theme') || 'light';
-      document.getElementById(temaAtual === 'dark' ? 'temaDark' : 'temaLight').checked = true;
-
-      // Atualiza o preview em tempo real conforme o usuário digita
-      document.getElementById('inputNome').addEventListener('input', (e) => {
-        atualizarPreview(e.target.value);
-      });
-    })();
-
-    // ── Preview do avatar ─────────────────────────────────
-    function atualizarPreview(nome) {
-      const partes = (nome || '').trim().split(/\s+/).filter(Boolean);
-      const iniciais = partes.slice(0, 2).map(p => p[0]?.toUpperCase() || '').join('') || '?';
-      document.getElementById('avatarPreview').textContent = iniciais;
-      document.getElementById('previewName').textContent = nome.trim() || '(sem nome)';
-    }
-
-    // ── Salvar perfil ─────────────────────────────────────
-    async function salvarPerfil() {
-      const nome = document.getElementById('inputNome').value.trim();
-      const btn  = document.getElementById('btnSalvarPerfil');
-      const msg  = document.getElementById('statusPerfil');
-
-      if (!nome) {
-        exibirStatus(msg, 'error', 'O nome não pode ficar em branco.');
-        return;
-      }
-
-      btn.disabled = true;
-      btn.textContent = 'Salvando…';
-
-      try {
-        const { data: { session } } = await _supabaseClient.auth.getSession();
-        if (!session) throw new Error('Sessão expirada. Faça login novamente.');
-
-        // Atualiza na tabela profiles
-        const { error } = await _supabaseClient
-          .from('profiles')
-          .upsert({ id: session.user.id, display_name: nome, email: session.user.email }, { onConflict: 'id' });
-        if (error) throw error;
-
-        // Atualiza também no user_metadata como fallback
-        await _supabaseClient.auth.updateUser({ data: { display_name: nome } });
-
-        // Atualiza a sidebar imediatamente
-        const el = document.getElementById('userName');
-        if (el) el.textContent = nome;
-        const partes = nome.split(/\s+/).slice(0, 2).map(p => p[0]?.toUpperCase() || '').join('');
-        const av = document.getElementById('userAvatar');
-        if (av) av.textContent = partes || '?';
-
-        window._currentDisplayName = nome;
-        exibirStatus(msg, 'success', '✓ Nome atualizado com sucesso!');
-        showToast('Nome de usuário atualizado!', 'success');
-      } catch (err) {
-        exibirStatus(msg, 'error', err.message);
-        showToast('Erro ao salvar: ' + err.message, 'error');
-      } finally {
-        btn.disabled = false;
-        btn.textContent = 'Salvar alterações';
-      }
-    }
-
-    // ── Aplicar tema pelo seletor ─────────────────────────
-    function aplicarTemaSelecionado(tema) {
-      document.documentElement.setAttribute('data-theme', tema);
-      localStorage.setItem('cd-theme', tema);
-      updateThemeIcon(tema);
-
-      const msg = document.getElementById('statusTema');
-      msg.textContent = tema === 'dark' ? '🌙 Tema escuro aplicado!' : '☀️ Tema claro aplicado!';
-      exibirStatus(msg, 'success', msg.textContent);
-    }
-
-    // ── Helper: exibir mensagem de status ─────────────────
-    function exibirStatus(el, tipo, texto) {
-      el.className = `config-status-msg ${tipo} visible`;
-      el.textContent = texto;
-      clearTimeout(el._timer);
-      el._timer = setTimeout(() => el.classList.remove('visible'), 3500);
-    }
-  </script>
+  <script src="../js/configuracoes.js"></script>
 </body>
 </html>
