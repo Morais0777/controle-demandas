@@ -4,12 +4,14 @@
 // ============================================================
 
 // ── Cliente Supabase (criado a partir do config.js) ──────────
-const supabase = window.supabase.createClient(
+// Renomeado para _supabaseClient para evitar conflito com a
+// variável global 'supabase' exposta pelo CDN UMD
+const _supabaseClient = window.supabase.createClient(
   SUPABASE_CONFIG.url,
   SUPABASE_CONFIG.anonKey,
   { auth: { autoRefreshToken: true, persistSession: true } }
 );
-window._sb = supabase; // expõe para dashboard.js, demandas.js, etc.
+window._sb = _supabaseClient;
 
 // ── Proteção de rota ──────────────────────────────────────────
 async function initPage(pageTitle) {
@@ -243,5 +245,6 @@ function renderLayout(activeSection) {
     document.body.insertAdjacentHTML('beforeend', '<div class="toast-container" id="toastContainer"></div>');
   }
 }
+
 
 
