@@ -247,4 +247,3 @@ function renderLayout(activeSection) {
 }
 
 
-
