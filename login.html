@@ -104,28 +104,11 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <script src="js/config.js"></script>
+  <script src="js/app.js"></script>
   <script>
-    // ── Storage customizado usando sessionStorage ─────────────────
-    // Sessão funciona normalmente dentro da aba/navegador aberto,
-    // mas some automaticamente ao fechar o navegador ou a aba.
-    const sessionStorageAdapter = {
-      getItem:    (key)        => sessionStorage.getItem(key),
-      setItem:    (key, value) => sessionStorage.setItem(key, value),
-      removeItem: (key)        => sessionStorage.removeItem(key),
-    };
-
-    const _sb = window.supabase.createClient(
-      SUPABASE_CONFIG.url,
-      SUPABASE_CONFIG.anonKey,
-      {
-        auth: {
-          storage: sessionStorageAdapter,
-          autoRefreshToken: true,
-          persistSession: true,   // true aqui — mas usa sessionStorage, não localStorage
-          detectSessionInUrl: true,
-        }
-      }
-    );
+    // ── Reutiliza a instância única criada pelo app.js ────────────
+    // Evita dois clientes separados que causavam loop de redirecionamento
+    const _sb = window._sb;
 
     // ── Tema ──────────────────────────────────────────────────────
     const html = document.documentElement;

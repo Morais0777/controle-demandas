@@ -21,7 +21,7 @@ const _supabaseClient = window.supabase.createClient(
       storage: _sessionStorageAdapter,
       autoRefreshToken: true,
       persistSession: true,    // true, mas salva em sessionStorage (não localStorage)
-      detectSessionInUrl: true,
+      detectSessionInUrl: false, // ✅ evita loop de redirecionamento
     }
   }
 );
