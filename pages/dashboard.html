@@ -11,11 +11,13 @@
   <link rel="stylesheet" href="../css/components.css">
   <link rel="stylesheet" href="../css/responsive.css">
   <style>
-    /* Fix sidebar layout — garante sem gaps entre sidebar e conteúdo */
-    html, body { margin: 0; padding: 0; height: 100%; }
-    .app-layout { display: flex !important; min-height: 100vh; gap: 0 !important; margin: 0 !important; padding: 0 !important; }
-    .sidebar { display: flex; flex-direction: column; flex-shrink: 0; min-height: 100vh; height: 100vh; position: sticky; top: 0; }
-    .main-content { flex: 1; min-width: 0; overflow-y: auto; }
+    html, body { margin: 0; padding: 0; height: 100%; overflow-x: hidden; }
+    .app-layout { display: flex !important; min-height: 100vh; gap: 0 !important; margin: 0 !important; padding: 0 !important; overflow-x: hidden; }
+    .main-content { flex: 1; min-width: 0; overflow-x: hidden; }
+    @media (min-width: 769px) {
+      .sidebar { display: flex; flex-direction: column; flex-shrink: 0; min-height: 100vh; height: 100vh; position: sticky; top: 0; }
+      .main-content { overflow-y: auto; }
+    }
   </style>
 </head>
 <body>
@@ -89,4 +91,3 @@
   <script src="../js/dashboard.js"></script>
 </body>
 </html>
-
