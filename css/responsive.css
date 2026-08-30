@@ -2,6 +2,54 @@
    RESPONSIVE.CSS — Adaptações Mobile e Tablet
    ============================================================ */
 
+/* ── Topbar Mobile ────────────────────────────────────────── */
+/* Fica oculta no desktop, aparece só no mobile */
+.topbar {
+  display: none;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+  height: 56px;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  flex-shrink: 0;
+}
+
+.topbar-menu-btn,
+.topbar-theme-btn {
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.topbar-menu-btn:hover,
+.topbar-theme-btn:hover {
+  background: var(--color-surface-hover);
+  color: var(--color-primary);
+}
+
+.topbar-title {
+  flex: 1;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* ── Tablet (< 1024px) ────────────────────────────────────── */
 @media (max-width: 1024px) {
   :root { --sidebar-width: 220px; }
@@ -35,13 +83,13 @@
   .main-content {
     margin-left: 0;
     width: 100%;
+    display: flex;
+    flex-direction: column;
   }
 
-  /* Mostra botão de menu */
-  .topbar-menu-btn {
+  /* Mostra a topbar mobile */
+  .topbar {
     display: flex;
-    align-items: center;
-    justify-content: center;
   }
 
   /* Padding menor no conteúdo */
@@ -242,6 +290,4 @@
 .print-footer {
   display: none;
 }
-
-
 

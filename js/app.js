@@ -240,6 +240,13 @@ function renderLayout(activeSection) {
       <span class="nav-icon">${item.icon}</span><span>${item.label}</span>
     </a>`).join('');
 
+  // Labels para o título da página no topbar mobile
+  const sectionLabels = {
+    dashboard: 'Dashboard', demandas: 'Demandas', solicitacoes: 'Solicitações',
+    lembretes: 'Lembretes', relatorios: 'Relatórios', configuracoes: 'Configurações'
+  };
+  const pageLabel = sectionLabels[activeSection] || 'Demandas';
+
   const sidebarHTML = `
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-logo">
@@ -271,6 +278,24 @@ function renderLayout(activeSection) {
       </div>
     </aside>`;
 
+  // ── Topbar mobile (só visível em telas pequenas via CSS) ──
+  const topbarHTML = `
+    <header class="topbar" id="topbar">
+      <button class="topbar-menu-btn" onclick="toggleMobileMenu()" aria-label="Abrir menu">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="3" y1="6"  x2="21" y2="6"/>
+          <line x1="3" y1="12" x2="21" y2="12"/>
+          <line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+      <span class="topbar-title" id="topbarTitle">${pageLabel}</span>
+      <button class="topbar-theme-btn" onclick="toggleTheme()" aria-label="Alternar tema">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="iconTheme">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+    </header>`;
+
   if (!document.getElementById('sidebarOverlay')) {
     document.body.insertAdjacentHTML('beforeend', '<div class="sidebar-overlay" id="sidebarOverlay"></div>');
   }
@@ -284,6 +309,13 @@ function renderLayout(activeSection) {
     layout.style.margin    = '0';
     layout.style.padding   = '0';
   }
+
+  // Insere topbar dentro do main-content (antes do page-content)
+  const mainContent = document.querySelector('.main-content');
+  if (mainContent) {
+    mainContent.insertAdjacentHTML('afterbegin', topbarHTML);
+  }
+
   if (!document.getElementById('toastContainer')) {
     document.body.insertAdjacentHTML('beforeend', '<div class="toast-container" id="toastContainer"></div>');
   }
