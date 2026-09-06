@@ -11,12 +11,30 @@
   <link rel="stylesheet" href="../css/components.css">
   <link rel="stylesheet" href="../css/responsive.css">
   <style>
-    html, body { margin: 0; padding: 0; height: 100%; overflow-x: hidden; }
-    .app-layout { display: flex !important; min-height: 100vh; gap: 0 !important; margin: 0 !important; padding: 0 !important; overflow-x: hidden; }
-    .main-content { flex: 1; min-width: 0; overflow-x: hidden; }
+    /* ── CORREÇÃO DE LAYOUT ────────────────────────────────────────
+       Problema: sidebar cortada no topo porque:
+       1) .app-layout não tinha align-items:flex-start — o flex
+          esticava a sidebar via stretch, fazendo-a ultrapassar 100vh
+          e quebrando o position:sticky
+       2) min-height:100vh + height:100vh juntos no filho de flex
+          sem align-items causavam altura inconsistente
+       Solução: align-items no pai; sidebar herda height:100vh do
+       style.css sem override conflitante aqui
+    ──────────────────────────────────────────────────────────────── */
+    html, body { margin: 0; padding: 0; overflow-x: hidden; }
+    .app-layout {
+      display: flex !important;
+      align-items: flex-start;   /* impede stretch — mantém sticky funcional */
+      min-height: 100vh;
+      gap: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      overflow-x: hidden;
+    }
+    .main-content { flex: 1; min-width: 0; overflow-x: hidden; overflow-y: auto; }
     @media (min-width: 769px) {
-      .sidebar { display: flex; flex-direction: column; flex-shrink: 0; min-height: 100vh; height: 100vh; position: sticky; top: 0; }
-      .main-content { overflow-y: auto; }
+      /* height:100vh e flex-direction:column já vêm do style.css — não repetir aqui */
+      .sidebar { position: sticky; top: 0; }
     }
   </style>
 </head>
@@ -80,7 +98,6 @@
       </div>
     </main>
   </div>
-
 
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>

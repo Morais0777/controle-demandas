@@ -23,6 +23,7 @@ body {
 /* ── Layout Principal ─────────────────────────────────────── */
 .app-layout {
   display: flex;
+  align-items: flex-start;   /* ← CORREÇÃO: evita stretch na sidebar, mantém sticky funcional */
   min-height: 100vh;
 }
 
@@ -289,6 +290,9 @@ a:hover { text-decoration: underline; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--color-text-subtle); }
+
+
+
 
 
 
