@@ -298,6 +298,11 @@ a:hover { text-decoration: underline; }
 ::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--color-text-subtle); }
 
+/* ── Topbar: visível só no mobile ────────────────────────────── */
+.topbar {
+  display: none; /* oculto no desktop — só aparece no mobile via @media abaixo */
+}
+
 /* ── Mobile: sidebar oculta por padrão, desliza com transform ── */
 @media (max-width: 768px) {
   html, body {
@@ -311,9 +316,13 @@ a:hover { text-decoration: underline; }
   .sidebar.mobile-open {
     transform: translateX(0);     /* abre ao clicar no botão hambúrguer */
   }
+  .topbar {
+    display: flex; /* reativa o topbar no mobile */
+  }
   .main-content {
     margin-left: 0;               /* sem sidebar visível, sem margin */
     height: 100vh;                /* mantém scroll contido no mobile */
   }
 }
+
 
