@@ -261,14 +261,23 @@ body {
   margin-left: var(--sidebar-width); /* compensa a sidebar fixed */
 }
 
-/* ── Header removido ─────────────────────────────────────── */
-
 /* ── Área de Conteúdo ─────────────────────────────────────── */
 .page-content {
   flex: 1;
-  padding: 16px 24px;
+  padding: 8px 24px 24px; /* AJUSTE: Reduzido o topo para 8px para tirar a folga no topo */
   width: 100%;
   box-sizing: border-box;
+}
+
+/* ── Grid dos Cards de Indicadores (Métricas) ─────────────── */
+/* ADICIONADO: Ajuste fluido em grid para alinhar os 7 cards na tela */
+.metrics-grid,
+.cards-grid,
+.dashboard-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
 }
 
 /* ── Mobile Overlay ───────────────────────────────────────── */
@@ -324,5 +333,4 @@ a:hover { text-decoration: underline; }
     height: 100vh;                /* mantém scroll contido no mobile */
   }
 }
-
 
