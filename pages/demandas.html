@@ -11,14 +11,18 @@
   <link rel="stylesheet" href="../css/components.css">
   <link rel="stylesheet" href="../css/responsive.css">
   <style>
-    /* ── CORREÇÃO DE LAYOUT ─────────────────────────────────────────
-       Problema: sidebar cortada porque align-items:stretch (padrão)
-       esticava o elemento além de 100vh, quebrando position:sticky.
-       Adicionado align-items:flex-start no pai (.app-layout) e
-       removido min-height:100vh conflitante da sidebar — height:100vh
-       já vem do style.css global.
+    /* ── Layout corrigido ───────────────────────────────────────────
+       - html/body: overflow:hidden — trava scroll no documento
+       - .app-layout: align-items:flex-start — evita stretch na sidebar
+       - .main-content: height:100vh + overflow-y:auto — scroll interno
+       - .sidebar: position:fixed — não depende do fluxo nem do scroll
     ──────────────────────────────────────────────────────────────── */
-    html, body { margin: 0; padding: 0; overflow-x: hidden; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+    }
     .app-layout {
       display: flex !important;
       align-items: flex-start;
@@ -26,11 +30,23 @@
       gap: 0 !important;
       margin: 0 !important;
       padding: 0 !important;
+    }
+    .main-content {
+      flex: 1;
+      min-width: 0;
+      height: 100vh;
+      overflow-y: auto;
       overflow-x: hidden;
     }
-    .main-content { flex: 1; min-width: 0; overflow-x: hidden; overflow-y: auto; }
     @media (min-width: 769px) {
-      .sidebar { position: sticky; top: 0; }
+      .sidebar { position: fixed; top: 0; left: 0; bottom: 0; }
+      .main-content { margin-left: var(--sidebar-width, 240px); }
+    }
+    @media (max-width: 768px) {
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.mobile-open { transform: translateX(0); }
+      .main-content { margin-left: 0; }
+      .topbar { display: flex !important; }
     }
   </style>
 </head>
@@ -186,4 +202,3 @@
   <script src="../js/demandas.js"></script>
 </body>
 </html>
-
